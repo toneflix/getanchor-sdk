@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "target": "esnext",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "esModuleInterop": true,
+    "strict": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "./src/**/*",
+    "./tests/**/*",
+    "./eslint.config.*",
+    "./tsdown.config.*",
+    "./vitest.config.*",
+    "./oapiex.config.*",
+    "./anchor.config.*"
+  ],
+  "exclude": ["./dist", "./node_modules"]
+}

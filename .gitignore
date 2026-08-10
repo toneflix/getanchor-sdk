@@ -1,0 +1,14 @@
+/dist
+/node_modules
+/.vscode
+/.idea
+.DS_Store
+/.env
+/.env.local
+/.env.*.local
+/docs/.vitepress/.temp
+/docs/.vitepress/dist
+/docs/.vitepress/cache
+oapiex.config.*
+anchor.config.*
+coverage
