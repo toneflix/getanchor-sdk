@@ -1,9 +1,8 @@
-import { UserConfig } from "@oapiex/sdk-kit";
-
-
+import '@oapiex/sdk-kit'
 
 declare module '@oapiex/sdk-kit' {
     interface UserConfig {
-        apiKey: string;
+        /** Anchor API key, read from `anchor.config.js`. */
+        apiKey?: string
     }
 }

@@ -14,12 +14,12 @@ hero:
       link: /api/overview
 
 features:
-  - title: Type-Safe
-    details: Generated request, response, parameter, query, and header types are exported by the package.
-  - title: Two Client Styles
-    details: Use createClient for concise setup or Core for an explicit class-based client.
-  - title: Broad API Coverage
-    details: Work with customers, accounts, transfers, payments, bills, savings, statements, reports, and webhooks.
+  - title: Every endpoint
+    details: Customers, KYC/KYB, accounts, account numbers, sub-accounts, transfers, cards, collections, bills, statements, events and webhooks.
+  - title: Typed from Anchor's OpenAPI
+    details: Request bodies, responses and enums are typed per endpoint, and the full JSON:API document (included, pagination) is returned.
+  - title: Safe defaults
+    details: Sandbox unless told otherwise, idempotency keys on money movement, and constant-time webhook signature checks.
 ---
 
 ## Quick Start
@@ -31,10 +31,7 @@ pnpm add getanchor-sdk
 ```ts
 import { createClient } from 'getanchor-sdk';
 
-const anchor = createClient({
-  apiKey: process.env.ANCHOR_API_KEY!,
-  environment: 'sandbox',
-});
+const anchor = createClient({ apiKey: process.env.ANCHOR_API_KEY });
 
-const customers = await anchor.api.customerApis.list({});
+const { data: customers } = await anchor.api.customers.list({ size: 20 });
 ```

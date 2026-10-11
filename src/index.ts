@@ -1,117 +1,74 @@
-import type { ApiKeyAuthConfig, BaseApi as KitBaseApi, Core as KitCore } from '@oapiex/sdk-kit'
-import { createSdk as createBoundSdk, getConfig, setConfigFileBasename, updateConfig } from '@oapiex/sdk-kit'
-import { extractedApiDocumentManifest, extractedApiDocumentSdk } from './Schema'
+import { setConfigFileBasename, updateConfig } from '@oapiex/sdk-kit'
 
-import type { ExtractedApiDocumentApi } from './Schema'
-import { InitOptions } from './types'
+import { ANCHOR_URLS, Core } from './Core'
+import type { InitOptions } from './Core'
 
-export * from './Schema'
+export * from './types'
 export { ApiBinder } from './ApiBinder'
-export { BaseApi } from './BaseApi'
-export { AccountApi as AccountApiApi } from './Apis/AccountApi'
-export { ApiDocument as ApiDocumentApi } from './Apis/ApiDocument'
-export { Balance as BalanceApi } from './Apis/Balance'
-export { BankApi as BankApiApi } from './Apis/BankApi'
-export { BillApi as BillApiApi } from './Apis/BillApi'
-export { BillerProduct as BillerProductApi } from './Apis/BillerProduct'
-export { Biller as BillerApi } from './Apis/Biller'
-export { Bulk as BulkApi } from './Apis/Bulk'
-export { BusinessVerification as BusinessVerificationApi } from './Apis/BusinessVerification'
-export { ChargedByOrganization as ChargedByOrganizationApi } from './Apis/ChargedByOrganization'
-export { CounterpartyApi as CounterpartyApiApi } from './Apis/CounterpartyApi'
-export { CustomerApi as CustomerApiApi } from './Apis/CustomerApi'
-export { CustomerValidationBill as CustomerValidationBillApi } from './Apis/CustomerValidationBill'
-export { CustomFee as CustomFeeApi } from './Apis/CustomFee'
-export { Deposit as DepositApi } from './Apis/Deposit'
-export { DownloadDocumentDocument as DownloadDocumentDocumentApi } from './Apis/DownloadDocumentDocument'
-export { Download as DownloadApi } from './Apis/Download'
-export { EventApi as EventApiApi } from './Apis/EventApi'
-export { EventType as EventTypeApi } from './Apis/EventType'
-export { FreezeAccount as FreezeAccountApi } from './Apis/FreezeAccount'
-export { IndividualVerification as IndividualVerificationApi } from './Apis/IndividualVerification'
-export { NextOfKinIndividual as NextOfKinIndividualApi } from './Apis/NextOfKinIndividual'
-export { OfficersRequirementCustomer as OfficersRequirementCustomerApi } from './Apis/OfficersRequirementCustomer'
-export { Payment as PaymentApi } from './Apis/Payment'
-export { ReportApi as ReportApiApi } from './Apis/ReportApi'
-export { Requery as RequeryApi } from './Apis/Requery'
-export { Reverse as ReverseApi } from './Apis/Reverse'
-export { RolloverSaving as RolloverSavingApi } from './Apis/RolloverSaving'
-export { RootAccount as RootAccountApi } from './Apis/RootAccount'
-export { SavingApi as SavingApiApi } from './Apis/SavingApi'
-export { Search as SearchApi } from './Apis/Search'
-export { StatementApi as StatementApiApi } from './Apis/StatementApi'
-export { StatementDownload as StatementDownloadApi } from './Apis/StatementDownload'
-export { SubAccountApi as SubAccountApiApi } from './Apis/SubAccountApi'
-export { SubAccountBalance as SubAccountBalanceApi } from './Apis/SubAccountBalance'
-export { SubAccountTransaction as SubAccountTransactionApi } from './Apis/SubAccountTransaction'
-export { Transaction as TransactionApi } from './Apis/Transaction'
-export { TransferApi as TransferApiApi } from './Apis/TransferApi'
-export { TransferBulk as TransferBulkApi } from './Apis/TransferBulk'
-export { Unfreeze as UnfreezeApi } from './Apis/Unfreeze'
-export { Update as UpdateApi } from './Apis/Update'
-export { UploadDocumentDocument as UploadDocumentDocumentApi } from './Apis/UploadDocumentDocument'
-export { Verify as VerifyApi } from './Apis/Verify'
-export { VerifyAccountBulk as VerifyAccountBulkApi } from './Apis/VerifyAccountBulk'
-export { VerifyAccountPayment as VerifyAccountPaymentApi } from './Apis/VerifyAccountPayment'
-export { WebhookApi as WebhookApiApi } from './Apis/WebhookApi'
-export { WebhookVerify as WebhookVerifyApi } from './Apis/WebhookVerify'
-export { Withdrawal as WithdrawalApi } from './Apis/Withdrawal'
-export { Core } from './Core'
+export { BaseApi, serializeQuery } from './BaseApi'
+export type { ApiRequest } from './BaseApi'
+export { ANCHOR_URLS, anchorApiKeyAuth, Core } from './Core'
+export type { InitOptions } from './Core'
+export { AnchorApiError } from './Errors'
+export type { AnchorErrorObject } from './Errors'
+export { transport } from './Transport'
+export type { TransportRequest, TransportResponse } from './Transport'
+export { findIncluded, includedOfType, relationshipId, relationshipIds } from './JsonApi'
+export {
+    ANCHOR_SIGNATURE_HEADER,
+    ANCHOR_WEBHOOK_IPS,
+    AnchorWebhookError,
+    AnchorWebhooks,
+} from './Webhooks'
+export type { AnchorWebhookEvent, AnchorWebhookHeaders } from './Webhooks'
 
-export const securitySchemes = extractedApiDocumentManifest.securitySchemes
-export const security = extractedApiDocumentManifest.security
-export const createClient = (
-    options: InitOptions
-): KitCore & { api: KitBaseApi & ExtractedApiDocumentApi } => {
-    const config = getConfig()
+export { AccountNumbers as AccountNumbersApi } from './Apis/AccountNumbers'
+export { Accounts as AccountsApi } from './Apis/Accounts'
+export { Banks as BanksApi } from './Apis/Banks'
+export { Bills as BillsApi } from './Apis/Bills'
+export { Businesses as BusinessesApi } from './Apis/Businesses'
+export { CardPayments as CardPaymentsApi } from './Apis/CardPayments'
+export { Cards as CardsApi } from './Apis/Cards'
+export { CardTransfers as CardTransfersApi } from './Apis/CardTransfers'
+export {
+    PayIns as PayInsApi,
+    PayWithTransfers as PayWithTransfersApi,
+    ReservedAccounts as ReservedAccountsApi,
+} from './Apis/Collections'
+export { Counterparties as CounterpartiesApi } from './Apis/Counterparties'
+export { Customers as CustomersApi } from './Apis/Customers'
+export { Documents as DocumentsApi } from './Apis/Documents'
+export { Fees as FeesApi } from './Apis/Fees'
+export { InboundTransfers as InboundTransfersApi } from './Apis/InboundTransfers'
+export { NextOfKin as NextOfKinApi } from './Apis/NextOfKin'
+export { Countries as CountriesApi, Events as EventsApi, Webhooks as WebhooksApi } from './Apis/Platform'
+export { Reports as ReportsApi, Statements as StatementsApi } from './Apis/Reporting'
+export { Rewards as RewardsApi } from './Apis/Rewards'
+export { SubAccounts as SubAccountsApi } from './Apis/SubAccounts'
+export { Transactions as TransactionsApi } from './Apis/Transactions'
+export { Transfers as TransfersApi } from './Apis/Transfers'
 
-    options = {
-        ...options,
-        auth: {
-            in: 'header',
-            type: 'apiKey',
-            name: 'x-anchor-key',
-            token: config.apiKey ?? (config.auth as any)?.apiKey ?? (options.auth as any)?.apiKey ?? options.apiKey ?? process.env.ANCHOR_API_KEY!,
-            ...config.auth,
-            ...options.auth,
-        } as ApiKeyAuthConfig,
-        urls: {
-            live: 'https://api.getanchor.co',
-            sandbox: 'https://api.sandbox.getanchor.co',
-            ...config.urls,
-            ...options.urls,
-        },
-    }
-
-    const client = createBoundSdk(extractedApiDocumentSdk, options) as KitCore & { api: KitBaseApi & ExtractedApiDocumentApi }
-
-    return client
-}
+/**
+ * Create an Anchor client. Equivalent to `new Core(options)`.
+ *
+ * @param options
+ */
+export const createClient = (options: InitOptions = {}): Core => new Core(options)
 
 setConfigFileBasename('anchor.config')
 
-updateConfig({
-    urls: {
-        live: 'https://api.getanchor.co',
-        sandbox: 'https://api.sandbox.getanchor.co',
-    },
-})
+updateConfig({ urls: { ...ANCHOR_URLS } })
 
 export {
     BadRequestException,
-    Builder,
+    defineConfig,
     ForbiddenRequestException,
-    Http,
     HttpException,
-    setConfigFileBasename,
     UnauthorizedRequestException,
-    WebhookValidator,
-    createSdk,
 } from '@oapiex/sdk-kit'
 
 export type {
     AuthConfig,
-    InitOptions,
+    Environment,
     UnifiedResponse,
-    XGenericObject,
 } from '@oapiex/sdk-kit'

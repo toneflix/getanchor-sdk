@@ -1,58 +1,47 @@
 # Types and Utilities
 
-## Generated Types
+## Documents
 
-The package re-exports its generated schema types, including request bodies, responses, path parameters, queries, and headers.
+| Type                    | Shape                                                                |
+| ----------------------- | -------------------------------------------------------------------- |
+| `Resource<T, A, R>`     | `{ id, type: T, attributes: A, relationships?: Relationships<R> }`   |
+| `AnchorDocument<T>`     | `{ data: T, included?, meta? }`                                      |
+| `AnchorCollection<T>`   | `{ data: T[], included?, meta?: { pagination } }`                    |
+| `RequestDocument<T>`    | `T`, the resource object of a write; sent wrapped as `{ data: T }`   |
+| `RequestOptions`        | `{ idempotencyKey?, headers? }`, the last argument of every method   |
+
+Each resource has a named type (`Customer`, `DepositAccount`, `AccountNumber`, `Transfer`, `Card`, `CardPayment`, `PayIn`, `ReservedAccount`, `Webhook`, ...) and each write has an input type (`CreateCustomerInput`, `CreateTransferInput`, `CreateCardInput`, ...). Enumerations Anchor documents (`AnchorEventType`, `ProcessingStatus`, `FailureReason`, `NigerianState`, `DocumentType`, ...) are open string unions: known values autocomplete and new ones still compile.
+
+## JSON:API helpers
 
 ```ts
-import type {
-  CustomerInput,
-  CustomerQuery,
-  TransferInput,
-  TransferHeader,
-  WebhookInput,
-} from 'getanchor-sdk';
+import { findIncluded, includedOfType, relationshipId, relationshipIds } from 'getanchor-sdk';
+
+relationshipId(transfer, 'account');           // '1696...-anc_acc'
+relationshipIds(account, 'accountNumbers');    // ['...', '...']
+findIncluded(doc, [doc.data, 'customer']);     // the included customer, if requested
+includedOfType(doc, 'AccountNumber');          // every included AccountNumber
 ```
 
-Use these types instead of maintaining separate copies of Anchor request shapes.
+## Errors
 
-## Configuration Types
+| Class                  | When                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------- |
+| `AnchorApiError`       | Any non-2xx response. `statusCode`, `message`, `errors[]`, `body`. Extends `HttpException`. |
+| `AnchorWebhookError`   | A webhook delivery is unsigned, forged, or not an event.                              |
 
-The SDK re-exports these setup and response types from `@oapiex/sdk-kit`:
+## Extending
 
-- `InitOptions`
-- `AuthConfig`
-- `UnifiedResponse`
-- `XGenericObject`
-
-## Runtime Utilities
-
-The package also exports:
-
-- `createClient` and `Core`
-- `ApiBinder` and `BaseApi`
-- `Http`, `Builder`, and `createSdk`
-- `WebhookValidator`
-- `setConfigFileBasename`
-- `securitySchemes` and `security`
-
-HTTP error handling is available through `HttpException`, `BadRequestException`, `UnauthorizedRequestException`, and `ForbiddenRequestException`.
+`BaseApi` exposes a protected `request<T>(method, path, { params, query, body, options })` that applies auth, flattens query filters (`serializeQuery`) and maps errors. Subclass it to call an endpoint Anchor ships before this SDK does:
 
 ```ts
-import {
-  HttpException,
-  UnauthorizedRequestException,
-} from 'getanchor-sdk';
+import { BaseApi, type AnchorDocument } from 'getanchor-sdk';
 
-try {
-  await anchor.api.customerApis.list({});
-} catch (error) {
-  if (error instanceof UnauthorizedRequestException) {
-    console.error('Anchor authentication failed');
-  } else if (error instanceof HttpException) {
-    console.error(error.message);
+class Beta extends BaseApi {
+  thing (id: string) {
+    return this.request<AnchorDocument<unknown>>('GET', '/api/v1/things/{id}', { params: { id } });
   }
 }
 ```
 
-The shared runtime is provided by [`@oapiex/sdk-kit`](https://toneflix.github.io/oapiex/reference/sdk-kit).
+All network calls go through the exported `transport.send`, which tests can stub instead of mocking axios.
