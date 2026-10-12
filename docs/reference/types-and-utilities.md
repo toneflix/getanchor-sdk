@@ -76,7 +76,9 @@ Small functions for reading relationships and included resources:
 ```ts
 import { findIncluded, relationshipId } from 'getanchor-sdk';
 
-const document = await sdk.api.accounts.get(accountId, { include: 'AccountNumber' });
+const document = await sdk.api.accounts.get(accountId, {
+  include: 'AccountNumber',
+});
 
 relationshipId(document.data, 'customer'); // the customer's id
 findIncluded(document, [document.data, 'accountNumbers']); // the included AccountNumber
@@ -84,12 +86,28 @@ findIncluded(document, [document.data, 'accountNumbers']); // the included Accou
 
 ## Errors
 
-| Class                          | When                                                                                                 |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| `AnchorApiError`               | Any non-2xx response. Carries `statusCode`, `message`, `errors[]` (`title`, `status`, `detail`), `body`. |
-| `AnchorWebhookError`           | A webhook delivery is unsigned, forged, or not an event.                                             |
-| `HttpException`                | The kit's base class. `AnchorApiError` extends it.                                                   |
-| `BadRequestException`, `UnauthorizedRequestException`, `ForbiddenRequestException` | Re-exported from the kit for code shared with other oapiex SDKs. |
+| Class                                                                              | When                                                                                                     |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `AnchorApiError`                                                                   | Any non-2xx response. Carries `statusCode`, `message`, `errors[]` (`title`, `status`, `detail`), `body`. |
+| `AnchorWebhookError`                                                               | A webhook delivery is unsigned, forged, or not an event.                                                 |
+| `AnchorFileError`                                                                  | An upload's file path is relative, unreadable, or its URL could not be downloaded.                       |
+| `HttpException`                                                                    | The kit's base class. `AnchorApiError` extends it.                                                       |
+| `BadRequestException`, `UnauthorizedRequestException`, `ForbiddenRequestException` | Re-exported from the kit for code shared with other oapiex SDKs.                                         |
+
+## File Utilities
+
+Upload endpoints accept a `FileSource`: a `Blob` or `File`, raw bytes, an absolute path (or `file://` URL), or an `http(s)` URL to download.
+
+- `resolveFile(source, { fileName?, contentType? })`: reads or downloads a source and returns `{ blob, fileName }`, the same way `documents.upload` does.
+- `AnchorFileError`: thrown when a path is relative, a file cannot be read, or a download fails.
+
+```ts
+import { resolveFile } from 'getanchor-sdk';
+
+const { blob, fileName } = await resolveFile(
+  'https://storage.example.com/kyb/cac.pdf',
+);
+```
 
 ## Webhook Utilities
 
@@ -145,7 +163,9 @@ const transfer: CreateTransferInput = {
 };
 
 try {
-  await sdk.api.transfers.create(transfer, { idempotencyKey: crypto.randomUUID() });
+  await sdk.api.transfers.create(transfer, {
+    idempotencyKey: crypto.randomUUID(),
+  });
 } catch (error) {
   if (error instanceof AnchorApiError && error.statusCode === 401) {
     console.error('Authentication failed');

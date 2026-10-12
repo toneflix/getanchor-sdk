@@ -53,7 +53,9 @@ await sdk.api.customers.verifyIndividual(customer.id, {
   },
 });
 
-const { data: matches } = await sdk.api.customers.search({ searchValue: '22222222226' });
+const { data: matches } = await sdk.api.customers.search({
+  searchValue: '22222222226',
+});
 ```
 
 ### Business Customers
@@ -76,7 +78,15 @@ await sdk.api.customers.create({
     contact: {
       email: { general: 'hello@great.example' },
       phoneNumber: '07012345678',
-      address: { main: { addressLine_1: '12 James Street', city: 'Ikeja', state: 'LAGOS', postalCode: '100035', country: 'NG' } },
+      address: {
+        main: {
+          addressLine_1: '12 James Street',
+          city: 'Ikeja',
+          state: 'LAGOS',
+          postalCode: '100035',
+          country: 'NG',
+        },
+      },
     },
     officers: [
       {
@@ -86,7 +96,13 @@ await sdk.api.customers.create({
         email: 'josh@great.example',
         phoneNumber: '07012345678',
         nationality: 'NG',
-        address: { addressLine_1: '1 James Street', city: 'Yaba', state: 'LAGOS', postalCode: '100032', country: 'NG' },
+        address: {
+          addressLine_1: '1 James Street',
+          city: 'Yaba',
+          state: 'LAGOS',
+          postalCode: '100032',
+          country: 'NG',
+        },
         bvn: '22222222226',
         percentageOwned: 100,
       },
@@ -140,7 +156,13 @@ await sdk.api.nextOfKin.create(customerId, {
     relationship: 'Brother',
     phoneNumber: '08098765432',
     email: 'chidi@example.com',
-    address: { addressLine_1: '1 James Street', city: 'Yaba', state: 'LAGOS', postalCode: '100032', country: 'NG' },
+    address: {
+      addressLine_1: '1 James Street',
+      city: 'Yaba',
+      state: 'LAGOS',
+      postalCode: '100032',
+      country: 'NG',
+    },
   },
 });
 ```
@@ -154,20 +176,42 @@ Use `sdk.api.documents` for the documents a business needs for KYB. After `verif
 - `download(customerId, documentId)` calls `GET /api/v1/documents/download-document/{customerId}/{documentId}`.
 - `upload(customerId, documentId, input)` calls `POST /api/v1/documents/upload-document/{customerId}/{documentId}`.
 
-`upload` takes either a file, sent as multipart form data, or a text value such as a TIN or RC number.
+`upload` takes either a file, sent as multipart form data, or a text value such as a TIN or RC number. The `file` can be any of:
+
+- an absolute path on disk, or a `file://` URL;
+- an `http(s)://` URL, which the SDK downloads first;
+- a `Blob` or `File`, or raw bytes (`Buffer`, `Uint8Array`).
+
+The file name and content type are inferred from the path, the download's `Content-Disposition` and `Content-Type` headers, or the file extension. Pass `fileName` or `contentType` to override them. Relative paths are rejected, and a file that cannot be read or downloaded throws `AnchorFileError` before anything is sent to Anchor.
 
 ### Example
 
 ```ts
-import { readFile } from 'node:fs/promises';
-
 const { data: documents } = await sdk.api.documents.list(businessId);
 
+// From disk
 await sdk.api.documents.upload(businessId, cacDocumentId, {
-  file: await readFile('./cac-certificate.pdf'),
-  fileName: 'cac-certificate.pdf',
-  contentType: 'application/pdf',
+  file: '/var/uploads/kyb/cac-certificate.pdf',
 });
 
-await sdk.api.documents.upload(businessId, tinDocumentId, { text: '12345678-0001' });
+// From your own storage
+await sdk.api.documents.upload(businessId, memorandumDocumentId, {
+  file: 'https://storage.example.com/kyb/memorandum.pdf?signature=abc',
+});
+
+// From bytes you already hold
+await sdk.api.documents.upload(businessId, proofOfAddressDocumentId, {
+  file: uploadedBuffer,
+  fileName: 'proof-of-address.jpg',
+  contentType: 'image/jpeg',
+});
+
+// A text value instead of a file
+await sdk.api.documents.upload(businessId, tinDocumentId, {
+  text: '12345678-0001',
+});
 ```
+
+::: warning
+Downloading a URL makes a request from your server. Only pass URLs you control or trust, such as signed links to your own storage. Passing a URL taken directly from user input lets that user make your server fetch arbitrary addresses.
+:::

@@ -8,6 +8,7 @@ import type {
     RequestDocument,
     Resource,
 } from './common'
+import type { FileSource } from '../Files'
 
 export type CustomerStatus = OpenString<'ACTIVE' | 'EXPIRED' | 'DELETED' | 'IN_ACTIVE'>
 
@@ -348,7 +349,11 @@ export interface CustomerDocumentAttributes {
 
 export type CustomerDocument = Resource<'Document', CustomerDocumentAttributes, 'customer' | 'officers'>
 
-/** Either a file (multipart upload) or a text value such as a TIN or RC number. */
+/**
+ * Either a file (multipart upload) or a text value such as a TIN or RC number.
+ * `file` may be a Blob, raw bytes, an absolute path (or `file://` URL), or an
+ * `http(s)` URL that is downloaded first.
+ */
 export type DocumentUploadInput =
-    | { file: Blob | Uint8Array, fileName?: string, contentType?: string }
+    | { file: FileSource, fileName?: string, contentType?: string }
     | { text: string }

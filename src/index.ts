@@ -13,6 +13,8 @@ export { AnchorApiError } from './Errors'
 export type { AnchorErrorObject } from './Errors'
 export { transport } from './Transport'
 export type { TransportRequest, TransportResponse } from './Transport'
+export { AnchorFileError, resolveFile } from './Files'
+export type { FileOptions, FileSource, ResolvedFile } from './Files'
 export { findIncluded, includedOfType, relationshipId, relationshipIds } from './JsonApi'
 export {
     ANCHOR_SIGNATURE_HEADER,

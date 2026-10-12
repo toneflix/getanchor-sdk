@@ -13,6 +13,8 @@ describe('package exports', () => {
         expect(sdk.AnchorWebhooks).toBeTypeOf('function')
         expect(sdk.AnchorWebhookError).toBeTypeOf('function')
         expect(sdk.findIncluded).toBeTypeOf('function')
+        expect(sdk.resolveFile).toBeTypeOf('function')
+        expect(sdk.AnchorFileError).toBeTypeOf('function')
         expect(sdk.relationshipId).toBeTypeOf('function')
         expect(sdk.defineConfig).toBeTypeOf('function')
         expect(sdk.ANCHOR_URLS).toEqual({
