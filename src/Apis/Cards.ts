@@ -105,14 +105,31 @@ export class Cards extends BaseApi {
     }
 
     /**
-     * Step 2: exchange a reveal token for the card's sensitive details. The token
-     * identifies the card, and is sent as the bearer credential *instead of*
-     * your API key. Discard the token once this returns.
+     * Fetch a card's PAN, CVV, PIN and expiry.
      *
+     * Pass `{ cardId }` to do both steps in one call: the SDK mints a fresh reveal
+     * token for the card and spends it immediately, so the token never reaches
+     * your code. Pass a reveal token string instead if you minted one yourself
+     * with `createRevealToken`.
+     *
+     * The token is sent as the bearer credential *instead of* your API key.
+     * Never store or log the details this returns.
+     *
+     * HTTP POST /api/v1/cards/{cardId}/reveal-token (with `{ cardId }`)
      * HTTP GET /api/v1/cards/details
-     * @see https://docs.getanchor.co/docs/create-card#step-2-retrieve-the-sensitive-card-details
+     * @see https://docs.getanchor.co/docs/create-card#5-retrieving-sensitive-card-details
      */
-    async revealDetails (revealToken: string, options?: Omit<RequestOptions, 'idempotencyKey'>) {
+    async revealDetails (card: { cardId: string }, options?: Omit<RequestOptions, 'idempotencyKey'>): Promise<AnchorDocument<CardDetails>>
+    async revealDetails (revealToken: string, options?: Omit<RequestOptions, 'idempotencyKey'>): Promise<AnchorDocument<CardDetails>>
+    async revealDetails (source: string | { cardId: string }, options?: Omit<RequestOptions, 'idempotencyKey'>) {
+        const revealToken = typeof source === 'string'
+            ? source
+            : (await this.createRevealToken(source.cardId, options)).data?.token
+
+        if (!revealToken) {
+            throw new Error('Anchor did not return a card reveal token')
+        }
+
         return this.request<AnchorDocument<CardDetails>>('GET', '/api/v1/cards/details', {
             auth: false,
             options: { ...options, headers: { ...options?.headers, Authorization: `Bearer ${revealToken}` } },

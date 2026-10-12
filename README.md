@@ -87,11 +87,10 @@ The signature has no timestamp, so deduplicate on `event.id` and fetch the resou
 ## Cards: revealing PAN and CVV
 
 ```ts
-const { data: token } = await anchor.api.cards.createRevealToken(cardId);
-const { data: details } = await anchor.api.cards.revealDetails(token.token); // sent with the token, not your API key
+const { data: details } = await anchor.api.cards.revealDetails({ cardId });
 ```
 
-Never persist or log the reveal token or the details.
+The SDK mints a single-use reveal token and sends it instead of your API key, as Anchor requires. Never persist or log the details. If you mint a token yourself with `cards.createRevealToken(cardId)`, pass it as `revealDetails(token)`.
 
 ## Configuration
 

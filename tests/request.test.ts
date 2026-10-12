@@ -83,6 +83,47 @@ describe('request pipeline', () => {
         expect(header(headers, 'x-anchor-key')).toBeUndefined()
     })
 
+    it('mints and spends a reveal token in one call when given a cardId', async () => {
+        const { client, send } = mockClient()
+        const details = { data: { id: 'card_1', type: 'CardDetails', attributes: { pan: '5399830000000234', cvv: '123' } } }
+        send
+            .mockResolvedValueOnce({ status: 201, data: { data: { token: 'minted.jwt', expiresAt: '2026-10-12T10:05:00Z', expiresInSeconds: 300 } } })
+            .mockResolvedValueOnce({ status: 200, data: details })
+
+        const result = await client.api.cards.revealDetails({ cardId: 'card_1' })
+
+        expect(result).toEqual(details)
+        expect(send).toHaveBeenCalledTimes(2)
+
+        const [mint, reveal] = send.mock.calls.map(([request]) => request)
+        expect(mint.method).toBe('POST')
+        expect(parseUrl(mint.url).path).toBe('/api/v1/cards/card_1/reveal-token')
+        expect(header(mint.headers, 'x-anchor-key')).toBe(API_KEY)
+
+        expect(reveal.method).toBe('GET')
+        expect(parseUrl(reveal.url).path).toBe('/api/v1/cards/details')
+        expect(header(reveal.headers, 'Authorization')).toBe('Bearer minted.jwt')
+        expect(header(reveal.headers, 'x-anchor-key')).toBeUndefined()
+    })
+
+    it('does not reveal anything when minting the token fails', async () => {
+        const { client, send } = mockClient()
+        send.mockResolvedValueOnce({
+            status: 403,
+            data: { errors: [{ title: 'Forbidden', status: '403', detail: 'Card permission required' }] },
+        })
+
+        await expect(client.api.cards.revealDetails({ cardId: 'card_1' })).rejects.toThrow('Forbidden: Card permission required')
+        expect(send).toHaveBeenCalledTimes(1)
+    })
+
+    it('refuses to reveal when Anchor returns no token', async () => {
+        const { client, send } = mockClient({ status: 201, data: { data: {} } })
+
+        await expect(client.api.cards.revealDetails({ cardId: 'card_1' })).rejects.toThrow('did not return a card reveal token')
+        expect(send).toHaveBeenCalledTimes(1)
+    })
+
     it('uploads document files as multipart form data', async () => {
         const { client, lastRequest } = mockClient()
 

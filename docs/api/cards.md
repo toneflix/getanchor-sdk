@@ -21,7 +21,7 @@ Use `sdk.api.cards` for the card lifecycle.
 - `unfreeze(cardId)` calls `POST /api/v1/cards/{cardId}/unfreeze`.
 - `cancel(cardId)` calls `DELETE /api/v1/cards/{cardId}`.
 - `createRevealToken(cardId)` calls `POST /api/v1/cards/{cardId}/reveal-token`.
-- `revealDetails(revealToken)` calls `GET /api/v1/cards/details`.
+- `revealDetails({ cardId })` mints a reveal token and calls `GET /api/v1/cards/details` with it, in one call. `revealDetails(revealToken)` uses a token you minted yourself.
 
 Card issuance is asynchronous: a new card comes back `PENDING`, and is ready once `card.created` arrives. After a freeze or unfreeze, display the status the response returns rather than assuming it; not every frozen card can be unfrozen.
 
@@ -46,19 +46,30 @@ frozen.attributes.cardStatus; // e.g. INACTIVE
 
 ### Revealing Card Details
 
-Revealing the PAN, CVV, PIN, and expiry is a two-step flow. First mint a short-lived token for the card, then exchange it for the details. The SDK sends the token as the bearer credential for the second call instead of your API key, as Anchor requires.
+Revealing the PAN, CVV, PIN, and expiry is a two-step flow in Anchor: mint a short-lived token for the card, then exchange it for the details, sending the token as the bearer credential instead of your API key.
+
+Pass `{ cardId }` and the SDK does both steps for you. A fresh token is minted for every call and spent immediately, so it never reaches your code:
+
+```ts
+const { data: details } = await sdk.api.cards.revealDetails({ cardId });
+
+details.attributes.pan;
+details.attributes.cvv;
+details.attributes.expiryMonth;
+details.attributes.expiryYear;
+```
+
+If you need the token itself, for example to hand it to a client-side card widget, mint it with `createRevealToken` and pass it in:
 
 ```ts
 const { data: token } = await sdk.api.cards.createRevealToken(cardId);
 // token.expiresInSeconds, e.g. 300
 
 const { data: details } = await sdk.api.cards.revealDetails(token.token);
-details.attributes.pan;
-details.attributes.cvv;
 ```
 
 ::: danger
-Generate a new token for every reveal. Never store or log the token or the card details, never put the token in a URL, and discard it as soon as `revealDetails` returns.
+Never store or log the card details. If you mint tokens yourself, generate a new one for every reveal, never put it in a URL, and discard it as soon as `revealDetails` returns.
 :::
 
 ## cardTransfers
