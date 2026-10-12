@@ -64,7 +64,7 @@ const { data: transfer } = await anchor.api.transfers.create(
 | `statements`, `reports`                                    | Statement and report generation and download                              |
 | `events`, `webhooks`, `countries`                          | Event log, webhook endpoints, countries and states                        |
 
-The full method list is in [docs/api/overview.md](./docs/api/overview.md).
+Every method, with its endpoint and an example, is documented per product area at [getanchor.toneflix.net](https://getanchor.toneflix.net/api/overview) (source in [`docs/api`](./docs/api)).
 
 ## Webhooks
 
