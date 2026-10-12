@@ -31,7 +31,11 @@ pnpm add getanchor-sdk
 ```ts
 import { createClient } from 'getanchor-sdk';
 
-const anchor = createClient({ apiKey: process.env.ANCHOR_API_KEY });
+const anchor = createClient({
+  apiKey: process.env.ANCHOR_API_KEY,
+});
 
-const { data: customers } = await anchor.api.customers.list({ size: 20 });
+const { data: customers } = await anchor.api.customers.list({
+  size: 20,
+});
 ```
