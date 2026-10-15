@@ -38,9 +38,7 @@ export default defineConfig({
       },
       {
         text: 'Reference',
-        items: [
-          { text: 'Types and Utilities', link: '/reference/types-and-utilities' },
-        ],
+        items: [{ text: 'Types and Utilities', link: '/reference/types-and-utilities' }],
       },
     ],
     outline: {

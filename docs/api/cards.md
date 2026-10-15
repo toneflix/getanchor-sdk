@@ -36,13 +36,13 @@ const { data: card } = await sdk.api.cards.create({
     customer: { data: { id: customerId, type: 'IndividualCustomer' } },
     account: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 
-const { data: fetched } = await sdk.api.cards.get(card.id);
-fetched.attributes.last4;
+const { data: fetched } = await sdk.api.cards.get(card.id)
+fetched.attributes.last4
 
-const { data: frozen } = await sdk.api.cards.freeze(card.id);
-frozen.attributes.cardStatus; // e.g. INACTIVE
+const { data: frozen } = await sdk.api.cards.freeze(card.id)
+frozen.attributes.cardStatus // e.g. INACTIVE
 ```
 
 ### Revealing Card Details
@@ -52,21 +52,21 @@ Revealing the PAN, CVV, PIN, and expiry is a two-step flow in Anchor: mint a sho
 Pass `{ cardId }` and the SDK does both steps for you. A fresh token is minted for every call and spent immediately, so it never reaches your code:
 
 ```ts
-const { data: details } = await sdk.api.cards.revealDetails({ cardId });
+const { data: details } = await sdk.api.cards.revealDetails({ cardId })
 
-details.attributes.pan;
-details.attributes.cvv;
-details.attributes.expiryMonth;
-details.attributes.expiryYear;
+details.attributes.pan
+details.attributes.cvv
+details.attributes.expiryMonth
+details.attributes.expiryYear
 ```
 
 If you need the token itself, for example to hand it to a client-side card widget, mint it with `createRevealToken` and pass it in:
 
 ```ts
-const { data: token } = await sdk.api.cards.createRevealToken(cardId);
+const { data: token } = await sdk.api.cards.createRevealToken(cardId)
 // token.expiresInSeconds, e.g. 300
 
-const { data: details } = await sdk.api.cards.revealDetails(token.token);
+const { data: details } = await sdk.api.cards.revealDetails(token.token)
 ```
 
 ::: danger
@@ -94,7 +94,7 @@ await sdk.api.cardTransfers.create({
     source: { data: { id: accountId, type: 'DepositAccount' } },
     destination: { data: { id: cardId, type: 'Card' } },
   },
-});
+})
 
 // Unfund
 await sdk.api.cardTransfers.create({
@@ -104,7 +104,7 @@ await sdk.api.cardTransfers.create({
     source: { data: { id: cardId, type: 'Card' } },
     destination: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 ```
 
 ## cardPayments
@@ -121,11 +121,11 @@ A card payment keeps running totals in `amounts` (all minor units): `authorized`
 ```ts
 const { data: payment, included } = await sdk.api.cardPayments.get(paymentId, {
   include: 'CardPaymentHistory',
-});
+})
 
-payment.attributes.status; // e.g. SETTLED
-payment.attributes.amounts?.settled; // use this for the settled total
-payment.attributes.merchant?.name;
+payment.attributes.status // e.g. SETTLED
+payment.attributes.amounts?.settled // use this for the settled total
+payment.attributes.merchant?.name
 ```
 
 ::: tip

@@ -26,10 +26,10 @@ const { data: statement } = await sdk.api.statements.create({
   relationships: {
     account: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 
 // After statement.completed:
-const file = await sdk.api.statements.download(statement.id);
+const file = await sdk.api.statements.download(statement.id)
 ```
 
 ## reports
@@ -57,7 +57,7 @@ const { data: report } = await sdk.api.reports.create({
   relationships: {
     account: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 ```
 
 ## events
@@ -71,9 +71,9 @@ Use `sdk.api.events` to read the event log. It is the safety net for webhooks: a
 ### Example
 
 ```ts
-const { data: missed } = await sdk.api.events.list({ type: 'nip.transfer.successful', size: 50 });
+const { data: missed } = await sdk.api.events.list({ type: 'nip.transfer.successful', size: 50 })
 
-const event = await sdk.api.events.get(eventId, { include: 'transfer' });
+const event = await sdk.api.events.get(eventId, { include: 'transfer' })
 ```
 
 ## webhooks
@@ -102,13 +102,13 @@ const { data: webhook } = await sdk.api.webhooks.create({
     supportIncluded: true,
     enabledEvents: ['nip.transfer.successful', 'nip.transfer.failed', 'payin.received'],
   },
-});
+})
 
 const { data: result } = await sdk.api.webhooks.sendSample(webhook.id, {
   type: 'Webhook',
   attributes: { eventType: 'nip.transfer.successful' },
-});
-result.attributes.responseCode; // what your endpoint returned
+})
+result.attributes.responseCode // what your endpoint returned
 ```
 
 ## countries
@@ -121,5 +121,5 @@ Use `sdk.api.countries` for the countries and states Anchor accepts in addresses
 ### Example
 
 ```ts
-const { data: states } = await sdk.api.countries.states('NG');
+const { data: states } = await sdk.api.countries.states('NG')
 ```

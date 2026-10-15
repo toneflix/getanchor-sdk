@@ -6,76 +6,76 @@ import markdown from '@eslint/markdown'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig(
-    {
-        languageOptions: {
-            globals: {
-                console: 'readonly',
-                process: 'readonly',
-            },
-            parserOptions: {
-                tsconfigRootDir: process.cwd(),
-                project: './tsconfig.eslint.json',
-                ecmaVersion: 'latest',
-                sourceType: 'module',
-            }
+  {
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+      },
+      parserOptions: {
+        tsconfigRootDir: process.cwd(),
+        project: './tsconfig.eslint.json',
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
+  },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    files: ['docs/**/*.md', 'README.md'],
+    plugins: {
+      markdown,
+    },
+    extends: ['markdown/recommended'],
+    rules: {
+      'no-irregular-whitespace': 'off',
+      'markdown/no-missing-label-refs': 'off',
+    },
+  },
+  {
+    files: ['src/types/*.ts'],
+    rules: {
+      '@typescript-eslint/no-empty-object-type': 'off',
+    },
+  },
+  [
+    globalIgnores([
+      'docs/.vitepress/**',
+      'bin/**',
+      'coverage/**',
+      'dist/**',
+      'build/**',
+      'node_modules/**',
+    ]),
+  ],
+  {
+    rules: {
+      'brace-style': ['error', '1tbs', { allowSingleLine: false }],
+      'no-console': 'off',
+      // 'no-ternary': 'error',
+      'newline-before-return': 'error',
+      semi: ['error', 'never'],
+      quotes: ['error', 'single'],
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_|_',
+          vars: 'all',
+          args: 'after-used',
+          ignoreRestSiblings: false,
+          varsIgnorePattern: '^I[A-Z]|^_',
         },
-    },
-    js.configs.recommended,
-    ...tseslint.configs.recommended,
-    {
-        files: ['docs/**/*.md', 'README.md'],
-        plugins: {
-            markdown,
+      ],
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/triple-slash-reference': [
+        'error',
+        {
+          path: 'always',
         },
-        extends: ['markdown/recommended'],
-        rules: {
-            'no-irregular-whitespace': 'off',
-            'markdown/no-missing-label-refs': 'off',
-        }
+      ],
     },
-    {
-        files: ['src/types/*.ts'],
-        rules: {
-            '@typescript-eslint/no-empty-object-type': 'off',
-        }
-    },
-    [
-        globalIgnores([
-            'docs/.vitepress/**',
-            'bin/**',
-            'coverage/**',
-            'dist/**',
-            'build/**',
-            'node_modules/**',
-        ])
-    ],
-    {
-        rules: {
-            'brace-style': [
-                'error',
-                '1tbs',
-                { 'allowSingleLine': false },
-            ],
-            'no-console': 'off',
-            // 'no-ternary': 'error',
-            'newline-before-return': 'error',
-            'semi': ['error', 'never'],
-            'quotes': ['error', 'single'],
-            'no-unused-vars': 'off',
-            '@typescript-eslint/no-unused-vars': [
-                'warn', {
-                    'argsIgnorePattern': '^_|_',
-                    'vars': 'all',
-                    'args': 'after-used',
-                    'ignoreRestSiblings': false,
-                    'varsIgnorePattern': '^I[A-Z]|^_',
-                }
-            ],
-            '@typescript-eslint/no-explicit-any': 'off',
-            '@typescript-eslint/triple-slash-reference': ['error', {
-                'path': 'always'
-            }]
-        }
-    },
-    eslintConfigPrettier,
+  },
+  eslintConfigPrettier,
 )

@@ -35,7 +35,7 @@ import type {
   CardPayment,
   PayIn,
   Webhook,
-} from 'getanchor-sdk';
+} from 'getanchor-sdk'
 ```
 
 Use these exported types whenever you build payloads or persist API responses in your own code.
@@ -74,14 +74,14 @@ Small functions for reading relationships and included resources:
 - `includedOfType(document, type)`: every included resource of one type.
 
 ```ts
-import { findIncluded, relationshipId } from 'getanchor-sdk';
+import { findIncluded, relationshipId } from 'getanchor-sdk'
 
 const document = await sdk.api.accounts.get(accountId, {
   include: 'AccountNumber',
-});
+})
 
-relationshipId(document.data, 'customer'); // the customer's id
-findIncluded(document, [document.data, 'accountNumbers']); // the included AccountNumber
+relationshipId(document.data, 'customer') // the customer's id
+findIncluded(document, [document.data, 'accountNumbers']) // the included AccountNumber
 ```
 
 ## Errors
@@ -102,11 +102,9 @@ Upload endpoints accept a `FileSource`: a `Blob` or `File`, raw bytes, an absolu
 - `AnchorFileError`: thrown when a path is relative, a file cannot be read, or a download fails.
 
 ```ts
-import { resolveFile } from 'getanchor-sdk';
+import { resolveFile } from 'getanchor-sdk'
 
-const { blob, fileName } = await resolveFile(
-  'https://storage.example.com/kyb/cac.pdf',
-);
+const { blob, fileName } = await resolveFile('https://storage.example.com/kyb/cac.pdf')
 ```
 
 ## Webhook Utilities
@@ -123,13 +121,13 @@ See the [Webhooks guide](/guide/webhooks) for a full handler.
 `BaseApi` exposes a protected `request<T>(method, path, { params, query, body, options })` that applies auth, flattens query filters, adds the `{ data }` envelope, and maps errors. Subclass it to call an endpoint Anchor ships before this SDK supports it:
 
 ```ts
-import { BaseApi, type AnchorDocument } from 'getanchor-sdk';
+import { BaseApi, type AnchorDocument } from 'getanchor-sdk'
 
 class Beta extends BaseApi {
   thing(id: string) {
     return this.request<AnchorDocument<unknown>>('GET', '/api/v1/things/{id}', {
       params: { id },
-    });
+    })
   }
 }
 ```
@@ -144,14 +142,14 @@ import {
   createClient,
   type CreateTransferInput,
   type InitOptions,
-} from 'getanchor-sdk';
+} from 'getanchor-sdk'
 
 const options: InitOptions = {
   environment: 'sandbox',
   apiKey: process.env.ANCHOR_API_KEY!,
-};
+}
 
-const sdk = createClient(options);
+const sdk = createClient(options)
 
 const transfer: CreateTransferInput = {
   type: 'BookTransfer',
@@ -160,15 +158,15 @@ const transfer: CreateTransferInput = {
     account: { data: { id: 'acc_source', type: 'DepositAccount' } },
     destinationAccount: { data: { id: 'acc_savings', type: 'DepositAccount' } },
   },
-};
+}
 
 try {
   await sdk.api.transfers.create(transfer, {
     idempotencyKey: crypto.randomUUID(),
-  });
+  })
 } catch (error) {
   if (error instanceof AnchorApiError && error.statusCode === 401) {
-    console.error('Authentication failed');
+    console.error('Authentication failed')
   }
 }
 ```

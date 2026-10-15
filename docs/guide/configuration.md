@@ -19,19 +19,19 @@ If you want the full list of runtime configuration behaviors, auth strategies, a
 ### Minimal Configuration
 
 ```js
-import { defineConfig } from 'getanchor-sdk';
+import { defineConfig } from 'getanchor-sdk'
 
 export default defineConfig({
   apiKey: process.env.ANCHOR_API_KEY,
   environment: 'sandbox',
   debugLevel: 0,
-});
+})
 ```
 
 ### Expanded Configuration
 
 ```js
-import { defineConfig } from 'getanchor-sdk';
+import { defineConfig } from 'getanchor-sdk'
 
 export default defineConfig({
   apiKey: process.env.ANCHOR_API_KEY,
@@ -45,7 +45,7 @@ export default defineConfig({
   },
   timeout: 15_000,
   debugLevel: 0,
-});
+})
 ```
 
 This expanded example uses the same `defineConfig` entrypoint but shows more of the options exposed by `@oapiex/sdk-kit`.
@@ -73,7 +73,7 @@ An explicit `apiKey` always wins over `anchor.config.js` and `ANCHOR_API_KEY`, i
 Selects the active environment. When nothing sets it, the SDK uses `sandbox`, so production always has to be asked for explicitly.
 
 ```ts
-const environment = process.env.NODE_ENV === 'production' ? 'live' : 'sandbox';
+const environment = process.env.NODE_ENV === 'production' ? 'live' : 'sandbox'
 ```
 
 ### `urls`
@@ -138,7 +138,7 @@ Use this for tracing, correlation, and integration-level metadata. For per-reque
 Sets the request timeout in milliseconds.
 
 ```ts
-timeout: 15_000;
+timeout: 15_000
 ```
 
 ### `debugLevel`
@@ -150,7 +150,7 @@ timeout: 15_000;
 Controls request and response debug verbosity. A typical production-friendly configuration sets this to `0`, which disables logging.
 
 ```ts
-debugLevel: 0;
+debugLevel: 0
 ```
 
 ::: danger
@@ -160,14 +160,14 @@ debugLevel: 0;
 ## Recommended Server-Side Setup
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 export const anchor = createClient({
   apiKey: process.env.ANCHOR_API_KEY!,
   environment: process.env.NODE_ENV === 'production' ? 'live' : 'sandbox',
   timeout: 15_000,
   debugLevel: 0,
-});
+})
 ```
 
 ## Runtime Overrides
@@ -175,7 +175,7 @@ export const anchor = createClient({
 You can still override configuration at client construction time even if you keep defaults in `anchor.config.js`:
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 const sdk = createClient({
   environment: 'sandbox',
@@ -183,7 +183,7 @@ const sdk = createClient({
   headers: {
     'x-request-id': crypto.randomUUID(),
   },
-});
+})
 ```
 
 ## Environment Variables

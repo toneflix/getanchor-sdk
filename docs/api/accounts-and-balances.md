@@ -32,21 +32,21 @@ const { data: account } = await sdk.api.accounts.create({
   relationships: {
     customer: { data: { id: customerId, type: 'IndividualCustomer' } },
   },
-});
+})
 
-const { data: balance } = await sdk.api.accounts.balance(account.id);
-balance.availableBalance; // spendable, minor units
-balance.ledgerBalance; // at last reconciliation
+const { data: balance } = await sdk.api.accounts.balance(account.id)
+balance.availableBalance // spendable, minor units
+balance.ledgerBalance // at last reconciliation
 
 await sdk.api.accounts.freeze(account.id, {
   type: 'DepositAccount',
   attributes: { freezeReason: 'FRAUD', freezeDescription: 'Reported stolen phone' },
-});
+})
 
 await sdk.api.accounts.unfreeze({
   type: 'DepositAccount',
   attributes: { id: account.id },
-});
+})
 ```
 
 ## accountNumbers
@@ -59,11 +59,11 @@ Use `sdk.api.accountNumbers` to get the account numbers that point at a deposit 
 ### Example
 
 ```ts
-const { data: numbers } = await sdk.api.accountNumbers.list({ AccountId: accountId });
+const { data: numbers } = await sdk.api.accountNumbers.list({ AccountId: accountId })
 
-const primary = numbers.find((number) => number.attributes.isDefault);
-primary?.attributes.accountNumber; // e.g. '2962576964'
-primary?.attributes.bank?.name; // e.g. 'PROVIDUS BANK'
+const primary = numbers.find((number) => number.attributes.isDefault)
+primary?.attributes.accountNumber // e.g. '2962576964'
+primary?.attributes.bank?.name // e.g. 'PROVIDUS BANK'
 ```
 
 You can also get them in one call with `sdk.api.accounts.get(accountId, { include: 'AccountNumber' })`.
@@ -88,12 +88,12 @@ const { data: subAccount } = await sdk.api.subAccounts.create({
   relationships: {
     parentAccount: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 
 const { data: entries } = await sdk.api.subAccounts.transactions({
   subAccountId: subAccount.id,
   direction: 'Credit',
-});
+})
 ```
 
 ## virtualNubans
@@ -106,14 +106,14 @@ Use `sdk.api.virtualNubans.get(id)` to read the 10-digit account number behind a
 ### Example
 
 ```ts
-import { relationshipIds } from 'getanchor-sdk';
+import { relationshipIds } from 'getanchor-sdk'
 
-const { data: subAccount } = await sdk.api.subAccounts.get(subAccountId);
-const [nubanId] = relationshipIds(subAccount, 'virtualNubans');
+const { data: subAccount } = await sdk.api.subAccounts.get(subAccountId)
+const [nubanId] = relationshipIds(subAccount, 'virtualNubans')
 
-const { data: nuban } = await sdk.api.virtualNubans.get(nubanId);
-nuban.attributes.accountNumber; // e.g. '5463208336'
-nuban.attributes.bank?.name; // e.g. 'PROVIDUS BANK'
+const { data: nuban } = await sdk.api.virtualNubans.get(nubanId)
+nuban.attributes.accountNumber // e.g. '5463208336'
+nuban.attributes.bank?.name // e.g. 'PROVIDUS BANK'
 ```
 
 ::: tip
@@ -135,9 +135,9 @@ This replaces the retired `/api/v1/payments` endpoints for account numbers.
 ```ts
 const { data: inbound } = await sdk.api.inboundTransfers.get(inboundTransferId, {
   include: 'DepositAccount',
-});
+})
 
-inbound.attributes.amount; // minor units
-inbound.attributes.sourceAccountName;
-inbound.attributes.sessionId;
+inbound.attributes.amount // minor units
+inbound.attributes.sourceAccountName
+inbound.attributes.sessionId
 ```

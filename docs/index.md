@@ -55,14 +55,14 @@ yarn add getanchor-sdk
 :::
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 const sdk = createClient({
   environment: 'sandbox',
   apiKey: process.env.ANCHOR_API_KEY!,
-});
+})
 
-const { data: banks } = await sdk.api.banks.list();
+const { data: banks } = await sdk.api.banks.list()
 ```
 
 ## Why Use This SDK?

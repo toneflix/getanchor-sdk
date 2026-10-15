@@ -30,12 +30,12 @@ Bill payments are debited from a deposit account and settle asynchronously: list
 ### Example
 
 ```ts
-const { data: billers } = await sdk.api.bills.billers({ category: 'electricity' });
-const { data: products } = await sdk.api.bills.products(billers[0].id);
-const productSlug = products[0].attributes.slug!;
+const { data: billers } = await sdk.api.bills.billers({ category: 'electricity' })
+const { data: products } = await sdk.api.bills.products(billers[0].id)
+const productSlug = products[0].attributes.slug!
 
-const { data: meter } = await sdk.api.bills.validateCustomer(productSlug, '04042404048');
-meter.attributes.customerName; // confirm with the user before paying
+const { data: meter } = await sdk.api.bills.validateCustomer(productSlug, '04042404048')
+meter.attributes.customerName // confirm with the user before paying
 
 await sdk.api.bills.create({
   type: 'Electricity',
@@ -49,7 +49,7 @@ await sdk.api.bills.create({
   relationships: {
     account: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 ```
 
 ### Airtime and Data
@@ -57,19 +57,28 @@ await sdk.api.bills.create({
 ```ts
 await sdk.api.bills.create({
   type: 'Airtime',
-  attributes: { phoneNumber: '2348012345678', provider: 'mtn', amount: 10_000, reference: 'airtime-77' },
+  attributes: {
+    phoneNumber: '2348012345678',
+    provider: 'mtn',
+    amount: 10_000,
+    reference: 'airtime-77',
+  },
   relationships: {
     account: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 
 await sdk.api.bills.create({
   type: 'Data',
-  attributes: { phoneNumber: '2348012345678', productSlug: '9mobile_data_1_5gb_30_days_', reference: 'data-78' },
+  attributes: {
+    phoneNumber: '2348012345678',
+    productSlug: '9mobile_data_1_5gb_30_days_',
+    reference: 'data-78',
+  },
   relationships: {
     account: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 ```
 
 ### Cable TV
@@ -86,5 +95,5 @@ await sdk.api.bills.create({
   relationships: {
     account: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 ```

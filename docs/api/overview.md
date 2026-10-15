@@ -12,12 +12,12 @@ The Anchor SDK groups endpoints under `sdk.api.*` namespaces. Each namespace map
 const sdk = createClient({
   apiKey: process.env.ANCHOR_API_KEY!,
   environment: 'sandbox',
-});
+})
 
-sdk.api.customers;
-sdk.api.accounts;
-sdk.api.transfers;
-sdk.api.cards;
+sdk.api.customers
+sdk.api.accounts
+sdk.api.transfers
+sdk.api.cards
 ```
 
 ## How the API Section Is Organized
@@ -66,9 +66,9 @@ The package exports the runtime helpers and API binder used throughout these pag
 If you are verifying a new setup, start with a read-only call, then a simple customer flow:
 
 ```ts
-const client = createClient({});
+const client = createClient({})
 
-const { data: banks } = await client.api.banks.list();
+const { data: banks } = await client.api.banks.list()
 
 const { data: created } = await client.api.customers.create({
   type: 'IndividualCustomer',
@@ -76,11 +76,17 @@ const { data: created } = await client.api.customers.create({
     fullName: { firstName: 'Ada', lastName: 'Obi' },
     email: 'ada@example.com',
     phoneNumber: '08012345678',
-    address: { addressLine_1: '1 James Street', city: 'Yaba', state: 'LAGOS', postalCode: '100032', country: 'NG' },
+    address: {
+      addressLine_1: '1 James Street',
+      city: 'Yaba',
+      state: 'LAGOS',
+      postalCode: '100032',
+      country: 'NG',
+    },
   },
-});
+})
 
-const { data: customer } = await client.api.customers.get(created.id);
+const { data: customer } = await client.api.customers.get(created.id)
 ```
 
 After that, move into the product area that matches your integration.

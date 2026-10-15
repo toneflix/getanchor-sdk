@@ -28,10 +28,10 @@ const { data: reserved } = await sdk.api.reservedAccounts.create({
   relationships: {
     customer: { data: { id: customerId, type: 'IndividualCustomer' } },
   },
-});
+})
 
-reserved.attributes.accountNumber;
-reserved.attributes.bank?.name; // e.g. '9 Payment Service Bank'
+reserved.attributes.accountNumber
+reserved.attributes.bank?.name // e.g. '9 Payment Service Bank'
 
 // Creating the customer in the same call, and settling into a sub-account
 await sdk.api.reservedAccounts.create({
@@ -49,7 +49,7 @@ await sdk.api.reservedAccounts.create({
   relationships: {
     payoutAccount: { data: { id: subAccountId, type: 'SubAccount' } },
   },
-});
+})
 ```
 
 ## payWithTransfers
@@ -72,12 +72,12 @@ const { data: checkout } = await sdk.api.payWithTransfers.create({
     amount: 1_500_000,
     expiryTime: 3600,
   },
-});
+})
 
-checkout.attributes.accountNumber; // show this to the customer
-checkout.attributes.expiry?.expiryDate;
+checkout.attributes.accountNumber // show this to the customer
+checkout.attributes.expiry?.expiryDate
 
-const { data: latest } = await sdk.api.payWithTransfers.get(checkout.id);
+const { data: latest } = await sdk.api.payWithTransfers.get(checkout.id)
 ```
 
 ## payIns
@@ -93,15 +93,15 @@ This replaces the retired `/api/v1/payments` endpoints for reserved accounts.
 ### Example
 
 ```ts
-import { findIncluded, relationshipId } from 'getanchor-sdk';
+import { findIncluded, relationshipId } from 'getanchor-sdk'
 
-const payInId = relationshipId(event, 'payIn')!;
+const payInId = relationshipId(event, 'payIn')!
 
-const document = await sdk.api.payIns.get(payInId, { include: 'Charge,ReservedAccount' });
+const document = await sdk.api.payIns.get(payInId, { include: 'Charge,ReservedAccount' })
 
-document.data.attributes.amount; // minor units
-document.data.attributes.status; // e.g. COMPLETED
+document.data.attributes.amount // minor units
+document.data.attributes.status // e.g. COMPLETED
 
-const charge = findIncluded(document, [document.data, 'attempt']);
-charge?.attributes.transferDetails; // senderName, senderBank, senderAccountNumber, ...
+const charge = findIncluded(document, [document.data, 'attempt'])
+charge?.attributes.transferDetails // senderName, senderBank, senderAccountNumber, ...
 ```

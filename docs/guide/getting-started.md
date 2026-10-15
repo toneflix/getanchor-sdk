@@ -48,20 +48,20 @@ Both approaches expose the same grouped API namespaces under `sdk.api`.
 This is the smallest explicit setup for a sandbox integration:
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 export const sdk = createClient({
   environment: 'sandbox',
   apiKey: process.env.ANCHOR_API_KEY!,
-});
+})
 ```
 
 If `ANCHOR_API_KEY` is set, or you keep your defaults in `anchor.config.js`, you can also initialize with an empty options object:
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
-const sdk = createClient({});
+const sdk = createClient({})
 ```
 
 ::: tip
@@ -87,10 +87,10 @@ const { data: customer } = await sdk.api.customers.create({
       country: 'NG',
     },
   },
-});
+})
 
-const customers = await sdk.api.customers.list({ size: 20 });
-const fetched = await sdk.api.customers.get(customer.id);
+const customers = await sdk.api.customers.list({ size: 20 })
+const fetched = await sdk.api.customers.get(customer.id)
 ```
 
 ## How Requests and Responses Look
@@ -104,7 +104,7 @@ Anchor speaks [JSON:API](https://docs.getanchor.co/reference/getting-started-wit
 ```ts
 const { data: account, included } = await sdk.api.accounts.get(accountId, {
   include: 'AccountNumber',
-});
+})
 ```
 
 ## Core Class Setup
@@ -112,14 +112,14 @@ const { data: account, included } = await sdk.api.accounts.get(accountId, {
 If you prefer a class instance, this pattern works the same way:
 
 ```ts
-import { Core } from 'getanchor-sdk';
+import { Core } from 'getanchor-sdk'
 
 const sdk = new Core({
   environment: 'sandbox',
   apiKey: process.env.ANCHOR_API_KEY!,
-});
+})
 
-const { data: customer } = await sdk.api.customers.get('16565906809790-anc_ind_cst');
+const { data: customer } = await sdk.api.customers.get('16565906809790-anc_ind_cst')
 ```
 
 `new Core(apiKey, environment, config)` is also supported.
@@ -141,9 +141,9 @@ For a fuller breakdown of how these values map to a real project setup, includin
 ## First Request
 
 ```ts
-const { data: banks } = await sdk.api.banks.list();
+const { data: banks } = await sdk.api.banks.list()
 
-console.log(banks.map((bank) => bank.attributes.name));
+console.log(banks.map((bank) => bank.attributes.name))
 ```
 
 ## Environment Variables

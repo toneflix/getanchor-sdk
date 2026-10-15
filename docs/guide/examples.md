@@ -9,12 +9,12 @@ These examples use the same initialization patterns described throughout this gu
 ## Onboard and Verify a Customer
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 const sdk = createClient({
   environment: 'sandbox',
   apiKey: process.env.ANCHOR_API_KEY!,
-});
+})
 
 const { data: customer } = await sdk.api.customers.create({
   type: 'IndividualCustomer',
@@ -30,7 +30,7 @@ const { data: customer } = await sdk.api.customers.create({
       country: 'NG',
     },
   },
-});
+})
 
 // Tier 2 KYC. The result arrives as customer.identification.* webhook events.
 await sdk.api.customers.verifyIndividual(customer.id, {
@@ -39,7 +39,7 @@ await sdk.api.customers.verifyIndividual(customer.id, {
     level: 'TIER_2',
     level2: { bvn: '22222222226', dateOfBirth: '1994-06-25', gender: 'Female' },
   },
-});
+})
 ```
 
 ## Open a Deposit Account and Get Its Account Number
@@ -51,19 +51,19 @@ const { data: account } = await sdk.api.accounts.create({
   relationships: {
     customer: { data: { id: customer.id, type: 'IndividualCustomer' } },
   },
-});
+})
 
-const { data: accountNumbers } = await sdk.api.accountNumbers.list({ AccountId: account.id });
-const nuban = accountNumbers[0]?.attributes.accountNumber;
+const { data: accountNumbers } = await sdk.api.accountNumbers.list({ AccountId: account.id })
+const nuban = accountNumbers[0]?.attributes.accountNumber
 
-const { data: balance } = await sdk.api.accounts.balance(account.id);
-balance.availableBalance; // minor units
+const { data: balance } = await sdk.api.accounts.balance(account.id)
+balance.availableBalance // minor units
 ```
 
 ## Send Money to a Bank Account
 
 ```ts
-const { data: lookup } = await sdk.api.banks.verifyAccount('000014', '0123456789');
+const { data: lookup } = await sdk.api.banks.verifyAccount('000014', '0123456789')
 
 const { data: counterparty } = await sdk.api.counterparties.create({
   type: 'CounterParty',
@@ -73,7 +73,7 @@ const { data: counterparty } = await sdk.api.counterparties.create({
     bankCode: '000014',
     verifyName: true,
   },
-});
+})
 
 const { data: transfer } = await sdk.api.transfers.create(
   {
@@ -85,11 +85,11 @@ const { data: transfer } = await sdk.api.transfers.create(
     },
   },
   { idempotencyKey: 'payout-42' },
-);
+)
 
 // Confirm the final state before settling your own ledger.
-const { data: verified } = await sdk.api.transfers.verify(transfer.id);
-verified.attributes.status; // e.g. COMPLETED
+const { data: verified } = await sdk.api.transfers.verify(transfer.id)
+verified.attributes.status // e.g. COMPLETED
 ```
 
 ## Move Money Between Your Own Accounts
@@ -105,7 +105,7 @@ await sdk.api.transfers.create(
     },
   },
   { idempotencyKey: crypto.randomUUID() },
-);
+)
 ```
 
 ## Issue and Fund a Card
@@ -118,7 +118,7 @@ const { data: card } = await sdk.api.cards.create({
     customer: { data: { id: customer.id, type: 'IndividualCustomer' } },
     account: { data: { id: account.id, type: 'DepositAccount' } },
   },
-});
+})
 // card.attributes.status is PENDING until card.created arrives.
 
 await sdk.api.cardTransfers.create({
@@ -128,7 +128,7 @@ await sdk.api.cardTransfers.create({
     source: { data: { id: account.id, type: 'DepositAccount' } },
     destination: { data: { id: card.id, type: 'Card' } },
   },
-});
+})
 ```
 
 ## Collect a One-Off Payment
@@ -142,9 +142,9 @@ const { data: checkout } = await sdk.api.payWithTransfers.create({
     amount: 1_500_000,
     expiryTime: 3600,
   },
-});
+})
 
-checkout.attributes.accountNumber; // show this to the customer
+checkout.attributes.accountNumber // show this to the customer
 ```
 
 ## Buy Airtime
@@ -152,17 +152,22 @@ checkout.attributes.accountNumber; // show this to the customer
 ```ts
 await sdk.api.bills.create({
   type: 'Airtime',
-  attributes: { phoneNumber: '2348012345678', provider: 'mtn', amount: 10_000, reference: 'airtime-77' },
+  attributes: {
+    phoneNumber: '2348012345678',
+    provider: 'mtn',
+    amount: 10_000,
+    reference: 'airtime-77',
+  },
   relationships: {
     account: { data: { id: account.id, type: 'DepositAccount' } },
   },
-});
+})
 ```
 
 ## Override Base URLs
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 const sdk = createClient({
   environment: 'sandbox',
@@ -170,36 +175,36 @@ const sdk = createClient({
   urls: {
     sandbox: 'https://anchor-proxy.internal.example.com',
   },
-});
+})
 ```
 
 ## Reuse a Shared SDK Instance
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 export const anchor = createClient({
   apiKey: process.env.ANCHOR_API_KEY!,
   environment: process.env.NODE_ENV === 'production' ? 'live' : 'sandbox',
   timeout: 20_000,
-});
+})
 
 export async function fetchBalance(accountId: string) {
-  const { data } = await anchor.api.accounts.balance(accountId);
+  const { data } = await anchor.api.accounts.balance(accountId)
 
-  return data;
+  return data
 }
 ```
 
 ## Initialize With Core
 
 ```ts
-import { Core } from 'getanchor-sdk';
+import { Core } from 'getanchor-sdk'
 
 const sdk = new Core({
   apiKey: process.env.ANCHOR_API_KEY!,
   environment: 'sandbox',
-});
+})
 
-const { data: customer } = await sdk.api.customers.get('16565906809790-anc_ind_cst');
+const { data: customer } = await sdk.api.customers.get('16565906809790-anc_ind_cst')
 ```

@@ -17,15 +17,15 @@ Use `sdk.api.banks` to list banks and confirm who owns an account before paying 
 ### Example
 
 ```ts
-const { data: banks } = await sdk.api.banks.list();
+const { data: banks } = await sdk.api.banks.list()
 
-const { data: lookup } = await sdk.api.banks.verifyAccount('000014', '0123456789');
-lookup.attributes.accountName; // e.g. 'ADA OBI'
+const { data: lookup } = await sdk.api.banks.verifyAccount('000014', '0123456789')
+lookup.attributes.accountName // e.g. 'ADA OBI'
 
 const { data: results } = await sdk.api.banks.verifyAccounts([
   { type: 'AccountDetail', attributes: { bankCode: '000014', accountNumber: '0123456789' } },
   { type: 'AccountDetail', attributes: { bankCode: '000013', accountNumber: '9876543210' } },
-]);
+])
 ```
 
 ## counterparties
@@ -50,7 +50,7 @@ const { data: counterparty } = await sdk.api.counterparties.create({
     bankCode: '000014',
     verifyName: true,
   },
-});
+})
 ```
 
 Set `verifyName: true` to have Anchor confirm the account name against the bank before saving.
@@ -88,11 +88,11 @@ const { data: transfer } = await sdk.api.transfers.create(
     },
   },
   { idempotencyKey: 'payout-42' },
-);
+)
 
-const { data: verified } = await sdk.api.transfers.verify(transfer.id);
-verified.attributes.status; // e.g. COMPLETED
-verified.attributes.failureReason; // e.g. INSUFFICIENT_BALANCE
+const { data: verified } = await sdk.api.transfers.verify(transfer.id)
+verified.attributes.status // e.g. COMPLETED
+verified.attributes.failureReason // e.g. INSUFFICIENT_BALANCE
 ```
 
 ### Bulk Transfers
@@ -110,10 +110,10 @@ const { data: bulk } = await sdk.api.transfers.createBulk(
     },
   ],
   { idempotencyKey: 'salary-oct' },
-);
+)
 
-const { data: progress } = await sdk.api.transfers.getBulk(bulk.id);
-progress.attributes.successfulTransferCount;
+const { data: progress } = await sdk.api.transfers.getBulk(bulk.id)
+progress.attributes.successfulTransferCount
 ```
 
 ## transactions
@@ -136,11 +136,11 @@ const page = await sdk.api.transactions.list({
   to: '2026-10-31',
   direction: 'Debit',
   size: 50,
-});
+})
 
 for (const entry of page.data) {
-  entry.attributes.amount; // minor units
-  entry.attributes.balanceAfter;
+  entry.attributes.amount // minor units
+  entry.attributes.balanceAfter
 }
 ```
 
@@ -162,9 +162,9 @@ const { data: fee } = await sdk.api.fees.charge({
   relationships: {
     account: { data: { id: accountId, type: 'DepositAccount' } },
   },
-});
+})
 
-await sdk.api.fees.reverse(fee.id);
+await sdk.api.fees.reverse(fee.id)
 ```
 
 ## rewards
@@ -185,5 +185,5 @@ await sdk.api.rewards.create({
     sourceAccount: { data: { id: rewardsPoolAccountId, type: 'DepositAccount' } },
     destinationAccount: { data: { id: customerAccountId, type: 'DepositAccount' } },
   },
-});
+})
 ```

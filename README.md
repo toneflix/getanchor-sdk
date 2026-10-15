@@ -13,14 +13,14 @@ pnpm add getanchor-sdk
 ## Quick Start
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 const anchor = createClient({
   apiKey: process.env.ANCHOR_API_KEY,
   environment: 'sandbox', // the default; pass 'live' for production
-});
+})
 
-const { data: banks } = await anchor.api.banks.list();
+const { data: banks } = await anchor.api.banks.list()
 ```
 
 `createClient(options)` is the same as `new Core(options)`. `new Core(apiKey, env, config)` also works.
@@ -40,7 +40,7 @@ const { data: transfer } = await anchor.api.transfers.create(
     },
   },
   { idempotencyKey: crypto.randomUUID() }, // sent as x-anchor-idempotent-key
-);
+)
 ```
 
 - **Amounts are minor units** (kobo for NGN, cents for USD). The SDK never converts them.
@@ -50,19 +50,19 @@ const { data: transfer } = await anchor.api.transfers.create(
 
 ## Namespaces
 
-| Namespace                                                  | Covers                                                                    |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `customers`                                                | Create, list, get, update, delete, search, KYC (`verifyIndividual`), KYB  |
-| `businesses`, `nextOfKin`, `documents`                     | Business officers, next of kin, KYB document upload/download              |
+| Namespace                                                    | Covers                                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `customers`                                                  | Create, list, get, update, delete, search, KYC (`verifyIndividual`), KYB |
+| `businesses`, `nextOfKin`, `documents`                       | Business officers, next of kin, KYB document upload/download             |
 | `accounts`, `accountNumbers`, `subAccounts`, `virtualNubans` | Deposit accounts, balances, freeze/unfreeze, account numbers, subledgers |
-| `inboundTransfers`                                         | Bank transfers received into your account numbers                         |
-| `counterparties`, `banks`                                  | Beneficiaries, bank list, name enquiry                                    |
-| `transfers`, `transactions`, `fees`, `rewards`             | Book/NIP/bulk transfers, verification, ledger, custom fees, rewards       |
-| `cards`, `cardTransfers`, `cardPayments`                   | Issue/freeze/cancel cards, reveal details, fund/unfund, card payments     |
-| `reservedAccounts`, `payWithTransfers`, `payIns`           | Collections under `/pay`                                                  |
-| `bills`                                                    | Airtime, data, electricity, cable TV, billers and products                |
-| `statements`, `reports`                                    | Statement and report generation and download                              |
-| `events`, `webhooks`, `countries`                          | Event log, webhook endpoints, countries and states                        |
+| `inboundTransfers`                                           | Bank transfers received into your account numbers                        |
+| `counterparties`, `banks`                                    | Beneficiaries, bank list, name enquiry                                   |
+| `transfers`, `transactions`, `fees`, `rewards`               | Book/NIP/bulk transfers, verification, ledger, custom fees, rewards      |
+| `cards`, `cardTransfers`, `cardPayments`                     | Issue/freeze/cancel cards, reveal details, fund/unfund, card payments    |
+| `reservedAccounts`, `payWithTransfers`, `payIns`             | Collections under `/pay`                                                 |
+| `bills`                                                      | Airtime, data, electricity, cable TV, billers and products               |
+| `statements`, `reports`                                      | Statement and report generation and download                             |
+| `events`, `webhooks`, `countries`                            | Event log, webhook endpoints, countries and states                       |
 
 Every method, with its endpoint and an example, is documented per product area at [getanchor.toneflix.net](https://getanchor.toneflix.net/api/overview) (source in [`docs/api`](./docs/api)).
 
@@ -71,15 +71,15 @@ Every method, with its endpoint and an example, is documented per product area a
 Anchor signs each delivery with your webhook `token` in `x-anchor-signature`. Verify against the **raw** body:
 
 ```ts
-import { AnchorWebhooks } from 'getanchor-sdk';
+import { AnchorWebhooks } from 'getanchor-sdk'
 
-const webhooks = new AnchorWebhooks(process.env.ANCHOR_WEBHOOK_TOKEN!);
+const webhooks = new AnchorWebhooks(process.env.ANCHOR_WEBHOOK_TOKEN!)
 
 app.post('/webhooks/anchor', express.raw({ type: '*/*' }), (req, res) => {
-  const event = webhooks.verify(req.body, req.headers); // throws AnchorWebhookError if forged
+  const event = webhooks.verify(req.body, req.headers) // throws AnchorWebhookError if forged
   // event.id, event.type, event.relationships, event.included
-  res.sendStatus(200);
-});
+  res.sendStatus(200)
+})
 ```
 
 The signature has no timestamp, so deduplicate on `event.id` and fetch the resource from the API before acting on it.
@@ -87,19 +87,19 @@ The signature has no timestamp, so deduplicate on `event.id` and fetch the resou
 ## Cards: revealing PAN and CVV
 
 ```ts
-const { data: details } = await anchor.api.cards.revealDetails({ cardId });
+const { data: details } = await anchor.api.cards.revealDetails({ cardId })
 ```
 
 The SDK mints a single-use reveal token and sends it instead of your API key, as Anchor requires. Never persist or log the details. If you mint a token yourself with `cards.createRevealToken(cardId)`, pass it as `revealDetails(token)`.
 
 ## Configuration
 
-| Option / variable                             | Default                                                                   |
-| --------------------------------------------- | ------------------------------------------------------------------------- |
-| `apiKey` / `ANCHOR_API_KEY`                   | Required. Sent as `x-anchor-key`.                                         |
-| `environment` / `ANCHOR_ENVIRONMENT`          | `sandbox`                                                                 |
-| `urls.sandbox`, `urls.live`                   | `https://api.sandbox.getanchor.co`, `https://api.getanchor.co`            |
-| `timeout`, `headers`, `debugLevel`            | From `@oapiex/sdk-kit`. `debugLevel: 3` logs headers, including your key. |
+| Option / variable                    | Default                                                                   |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| `apiKey` / `ANCHOR_API_KEY`          | Required. Sent as `x-anchor-key`.                                         |
+| `environment` / `ANCHOR_ENVIRONMENT` | `sandbox`                                                                 |
+| `urls.sandbox`, `urls.live`          | `https://api.sandbox.getanchor.co`, `https://api.getanchor.co`            |
+| `timeout`, `headers`, `debugLevel`   | From `@oapiex/sdk-kit`. `debugLevel: 3` logs headers, including your key. |
 
 Settings can also live in an `anchor.config.js` at the project root (`defineConfig({...})`). Keep Anchor credentials server-side.
 

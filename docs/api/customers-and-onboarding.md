@@ -43,7 +43,7 @@ const { data: customer } = await sdk.api.customers.create({
       country: 'NG',
     },
   },
-});
+})
 
 await sdk.api.customers.verifyIndividual(customer.id, {
   type: 'Verification',
@@ -51,12 +51,12 @@ await sdk.api.customers.verifyIndividual(customer.id, {
     level: 'TIER_2',
     level2: { bvn: '22222222226', dateOfBirth: '1994-06-25', gender: 'Female' },
   },
-});
+})
 
 const { data: matches } = await sdk.api.customers.search({
   customerType: 'IndividualCustomer',
   searchValue: '22222222226',
-});
+})
 ```
 
 ### Business Customers
@@ -109,7 +109,7 @@ await sdk.api.customers.create({
       },
     ],
   },
-});
+})
 ```
 
 ## businesses
@@ -129,12 +129,12 @@ Use `sdk.api.businesses` to change a business customer after creation and to man
 await sdk.api.businesses.update(businessId, {
   type: 'BusinessCustomerV2',
   attributes: { businessName: 'XBC Limited' },
-});
+})
 
 await sdk.api.businesses.updateOfficer(businessId, officerId, {
   type: 'BusinessOfficer',
   attributes: { role: 'OWNER', percentageOwned: 75 },
-});
+})
 ```
 
 ## nextOfKin
@@ -165,7 +165,7 @@ await sdk.api.nextOfKin.create(customerId, {
       country: 'NG',
     },
   },
-});
+})
 ```
 
 ## documents
@@ -188,29 +188,29 @@ The file name and content type are inferred from the path, the download's `Conte
 ### Example
 
 ```ts
-const { data: documents } = await sdk.api.documents.list(businessId);
+const { data: documents } = await sdk.api.documents.list(businessId)
 
 // From disk
 await sdk.api.documents.upload(businessId, cacDocumentId, {
   file: '/var/uploads/kyb/cac-certificate.pdf',
-});
+})
 
 // From your own storage
 await sdk.api.documents.upload(businessId, memorandumDocumentId, {
   file: 'https://storage.example.com/kyb/memorandum.pdf?signature=abc',
-});
+})
 
 // From bytes you already hold
 await sdk.api.documents.upload(businessId, proofOfAddressDocumentId, {
   file: uploadedBuffer,
   fileName: 'proof-of-address.jpg',
   contentType: 'image/jpeg',
-});
+})
 
 // A text value instead of a file
 await sdk.api.documents.upload(businessId, tinDocumentId, {
   text: '12345678-0001',
-});
+})
 ```
 
 ::: warning

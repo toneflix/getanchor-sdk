@@ -11,20 +11,20 @@ These patterns reflect common ways to use the SDK in a real integration service.
 Use `createClient` when you want the smallest amount of setup code.
 
 ```ts
-import { createClient } from 'getanchor-sdk';
+import { createClient } from 'getanchor-sdk'
 
 const sdk = createClient({
   environment: 'sandbox',
   apiKey: process.env.ANCHOR_API_KEY!,
-});
+})
 
-const { data: customers } = await sdk.api.customers.list({ size: 20 });
+const { data: customers } = await sdk.api.customers.list({ size: 20 })
 ```
 
 If you have already defined defaults in `anchor.config.js` or set `ANCHOR_API_KEY`, this also works:
 
 ```ts
-const sdk = createClient({});
+const sdk = createClient({})
 ```
 
 ## Class-Based Client
@@ -32,14 +32,14 @@ const sdk = createClient({});
 Use `Core` if you want a named SDK instance that can be passed around explicitly.
 
 ```ts
-import { Core } from 'getanchor-sdk';
+import { Core } from 'getanchor-sdk'
 
 const sdk = new Core({
   environment: 'sandbox',
   apiKey: process.env.ANCHOR_API_KEY!,
-});
+})
 
-const { data: account } = await sdk.api.accounts.get('169925847367121-anc_acc');
+const { data: account } = await sdk.api.accounts.get('169925847367121-anc_acc')
 ```
 
 This style is useful when you want to pass a concrete SDK instance through service constructors or shared modules.
@@ -74,7 +74,7 @@ await sdk.api.accounts.freeze(
   accountId,
   { type: 'DepositAccount', attributes: { freezeReason: 'FRAUD' } },
   { headers: { 'x-request-id': requestId } },
-);
+)
 ```
 
 ## Request Bodies
@@ -84,10 +84,15 @@ Write methods take the resource object that Anchor's documentation shows under `
 ```ts
 await sdk.api.counterparties.create({
   type: 'CounterParty',
-  attributes: { accountName: 'Ada Obi', accountNumber: '0123456789', bankCode: '000014', verifyName: true },
-});
+  attributes: {
+    accountName: 'Ada Obi',
+    accountNumber: '0123456789',
+    bankCode: '000014',
+    verifyName: true,
+  },
+})
 
-await sdk.api.counterparties.createBulk([first, second]);
+await sdk.api.counterparties.createBulk([first, second])
 ```
 
 Relationships keep Anchor's own `{ data: { id, type } }` shape, because that is part of the resource:
@@ -108,9 +113,9 @@ import {
   type CreateTransferInput,
   type DepositAccount,
   type Transfer,
-} from 'getanchor-sdk';
+} from 'getanchor-sdk'
 
-const sdk = createClient({});
+const sdk = createClient({})
 
 const payload: CreateTransferInput = {
   type: 'BookTransfer',
@@ -119,9 +124,9 @@ const payload: CreateTransferInput = {
     account: { data: { id: 'acc_source', type: 'DepositAccount' } },
     destinationAccount: { data: { id: 'acc_savings', type: 'DepositAccount' } },
   },
-};
+}
 
-const { data: transfer }: { data: Transfer } = await sdk.api.transfers.create(payload);
+const { data: transfer }: { data: Transfer } = await sdk.api.transfers.create(payload)
 ```
 
 Enumerations Anchor documents, such as `AnchorEventType`, `ProcessingStatus`, and `NigerianState`, are open string unions: known values autocomplete and values Anchor adds later still compile.
@@ -131,13 +136,13 @@ Enumerations Anchor documents, such as `AnchorEventType`, `ProcessingStatus`, an
 Anchor honours the `x-anchor-idempotent-key` header on transfers, bulk transfers, and virtual accounts, and remembers results for 24 hours. Pass `idempotencyKey` as the last argument:
 
 ```ts
-await sdk.api.transfers.create(payload, { idempotencyKey: `payout-${payoutId}` });
+await sdk.api.transfers.create(payload, { idempotencyKey: `payout-${payoutId}` })
 ```
 
 If a create call times out, recover the transfer by its reference instead of retrying blindly:
 
 ```ts
-const { data: transfer } = await sdk.api.transfers.getByReference(`payout-${payoutId}`);
+const { data: transfer } = await sdk.api.transfers.getByReference(`payout-${payoutId}`)
 ```
 
 ## Pagination and Includes
@@ -145,20 +150,20 @@ const { data: transfer } = await sdk.api.transfers.getByReference(`payout-${payo
 List methods accept `page` (zero based), `size`, `sort`, and `include`, and return pagination details in `meta`:
 
 ```ts
-const page = await sdk.api.transactions.list({ accountId, page: 0, size: 50 });
+const page = await sdk.api.transactions.list({ accountId, page: 0, size: 50 })
 
-page.meta?.pagination; // { number, size, total, totalPages }
+page.meta?.pagination // { number, size, total, totalPages }
 ```
 
 Use `include` to expand related resources into `included`, then read them with the JSON:API helpers:
 
 ```ts
-import { findIncluded, relationshipId } from 'getanchor-sdk';
+import { findIncluded, relationshipId } from 'getanchor-sdk'
 
-const document = await sdk.api.accounts.get(accountId, { include: 'AccountNumber' });
+const document = await sdk.api.accounts.get(accountId, { include: 'AccountNumber' })
 
-const customerId = relationshipId(document.data, 'customer');
-const accountNumber = findIncluded(document, [document.data, 'accountNumbers']);
+const customerId = relationshipId(document.data, 'customer')
+const accountNumber = findIncluded(document, [document.data, 'accountNumbers'])
 ```
 
 ## Default Headers and Timeouts
@@ -170,7 +175,7 @@ const sdk = createClient({
     'x-request-id': crypto.randomUUID(),
   },
   apiKey: process.env.ANCHOR_API_KEY!,
-});
+})
 ```
 
 ## Error Handling
@@ -178,18 +183,18 @@ const sdk = createClient({
 Every non-2xx response throws `AnchorApiError`. It extends the kit's `HttpException`, and carries Anchor's `errors` array so you can see exactly what Anchor rejected.
 
 ```ts
-import { AnchorApiError } from 'getanchor-sdk';
+import { AnchorApiError } from 'getanchor-sdk'
 
 try {
-  await sdk.api.accounts.get('missing-account');
+  await sdk.api.accounts.get('missing-account')
 } catch (error) {
   if (error instanceof AnchorApiError) {
-    error.statusCode; // 404
-    error.message; // "Not found: Account was not found"
-    error.errors; // [{ title, status, detail }]
+    error.statusCode // 404
+    error.message // "Not found: Account was not found"
+    error.errors // [{ title, status, detail }]
   }
 
-  throw error;
+  throw error
 }
 ```
 
@@ -200,7 +205,7 @@ Network failures (timeouts, refused connections) are rethrown unchanged, so you 
 This create, list, and fetch flow is useful when you want to verify your credentials and environment:
 
 ```ts
-const client = createClient({});
+const client = createClient({})
 
 const { data: created } = await client.api.customers.create({
   type: 'IndividualCustomer',
@@ -208,10 +213,16 @@ const { data: created } = await client.api.customers.create({
     fullName: { firstName: 'Ada', lastName: 'Obi' },
     email: 'ada@example.com',
     phoneNumber: '08012345678',
-    address: { addressLine_1: '1 James Street', city: 'Yaba', state: 'LAGOS', postalCode: '100032', country: 'NG' },
+    address: {
+      addressLine_1: '1 James Street',
+      city: 'Yaba',
+      state: 'LAGOS',
+      postalCode: '100032',
+      country: 'NG',
+    },
   },
-});
+})
 
-const list = await client.api.customers.list({ size: 20 });
-const { data: customer } = await client.api.customers.get(created.id);
+const list = await client.api.customers.list({ size: 20 })
+const { data: customer } = await client.api.customers.get(created.id)
 ```
