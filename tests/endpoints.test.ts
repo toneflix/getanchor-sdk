@@ -248,6 +248,13 @@ const cases: Case[] = [
     query: { AccountId: 'acc_1' },
   },
   {
+    name: 'payments.get',
+    call: (a) => a.payments.get('py_1', { include: 'VirtualNuban' }),
+    method: 'GET',
+    path: '/api/v1/payments/py_1',
+    query: { include: 'VirtualNuban' },
+  },
+  {
     name: 'inboundTransfers.get',
     call: (a) => a.inboundTransfers.get('inb_1', { include: 'DepositAccount' }),
     method: 'GET',

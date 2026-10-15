@@ -35,6 +35,7 @@ describe('package exports', () => {
       'VirtualNubansApi',
       'SubAccountsApi',
       'InboundTransfersApi',
+      'PaymentsApi',
       'CounterpartiesApi',
       'BanksApi',
       'TransfersApi',

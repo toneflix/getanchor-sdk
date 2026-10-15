@@ -93,4 +93,6 @@ After that, move into the product area that matches your integration.
 
 ## Retired Endpoints
 
-Anchor retired `GET /api/v1/payments`, `GET /api/v1/payments/{paymentId}`, and `GET /api/v1/payments/requery/{customerReference}` on 31 May 2026. The SDK does not include them. Use [`inboundTransfers.get`](/api/accounts-and-balances#inboundtransfers) for payments into account numbers, and [`payIns.get`](/api/collections#payins) for reserved accounts and pay with transfer.
+Anchor retired `GET /api/v1/payments`, `GET /api/v1/payments/{paymentId}`, and `GET /api/v1/payments/requery/{customerReference}` on 31 May 2026. The SDK leaves out the list and requery calls. Use [`inboundTransfers.get`](/api/accounts-and-balances#inboundtransfers) for payments into account numbers, and [`payIns.get`](/api/collections#payins) for reserved accounts and pay with transfer.
+
+It keeps [`payments.get`](/api/accounts-and-balances#payments): deposits into sub-account NUBANs are still `Payment` resources that `inboundTransfers.get` does not serve, and the lookup still answers.

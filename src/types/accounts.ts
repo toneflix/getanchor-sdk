@@ -200,6 +200,35 @@ export interface AccountNumberListQuery extends ListQuery {
   AccountId?: string
 }
 
+/**
+ * A bank transfer received into a virtual NUBAN, such as a sub-account's account
+ * number. It settles onto the sub-account as a `Settlement` transaction that
+ * links back here.
+ */
+export type Payment = Resource<
+  'Payment',
+  {
+    /** Gross amount the sender paid, in minor units. */
+    amount?: number
+    /** Anchor's fee on the deposit, in minor units. */
+    fee?: number
+    currency?: Currency
+    /** The NIP reference of the incoming transfer. */
+    paymentReference?: string
+    narration?: string
+    /** e.g. `BankTransfer`. */
+    type?: string
+    counterParty?: {
+      accountNumber?: string
+      accountName?: string
+      bank?: { name?: string }
+    }
+    paidAt?: string
+    createdAt?: string
+  },
+  'virtualNuban' | 'settlementAccount' | 'settlements'
+>
+
 /** Created when an account number receives a bank (NIP) transfer. */
 export type InboundTransfer = Resource<
   'InboundNIPTransfer',

@@ -105,7 +105,7 @@ Settings can also live in an `anchor.config.js` at the project root (`defineConf
 
 ## Not included
 
-- `/api/v1/payments`, `/payments/{id}` and `/payments/requery/{ref}` were [retired by Anchor on 31 May 2026](https://docs.getanchor.co/changelog/deprecation-of-legacy-payment-endpoints). Use `inboundTransfers.get` and `payIns.get`.
+- `/api/v1/payments` and `/payments/requery/{ref}` were [retired by Anchor on 31 May 2026](https://docs.getanchor.co/changelog/deprecation-of-legacy-payment-endpoints). Use `inboundTransfers.get` and `payIns.get`. `payments.get` is kept because deposits into sub-account NUBANs are still `Payment` resources that the replacements do not serve.
 - Savings endpoints are no longer in Anchor's documentation and were dropped.
 
 ## Development

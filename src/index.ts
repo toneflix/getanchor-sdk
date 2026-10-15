@@ -43,6 +43,7 @@ export { Customers as CustomersApi } from './Apis/Customers'
 export { Documents as DocumentsApi } from './Apis/Documents'
 export { Fees as FeesApi } from './Apis/Fees'
 export { InboundTransfers as InboundTransfersApi } from './Apis/InboundTransfers'
+export { Payments as PaymentsApi } from './Apis/Payments'
 export { NextOfKin as NextOfKinApi } from './Apis/NextOfKin'
 export {
   Countries as CountriesApi,

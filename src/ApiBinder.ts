@@ -15,6 +15,7 @@ import { Customers } from './Apis/Customers'
 import { Documents } from './Apis/Documents'
 import { Fees } from './Apis/Fees'
 import { InboundTransfers } from './Apis/InboundTransfers'
+import { Payments } from './Apis/Payments'
 import { NextOfKin } from './Apis/NextOfKin'
 import { Countries, Events, Webhooks } from './Apis/Platform'
 import { Reports, Statements } from './Apis/Reporting'
@@ -36,6 +37,7 @@ export class ApiBinder extends BaseApi {
   virtualNubans!: VirtualNubans
   subAccounts!: SubAccounts
   inboundTransfers!: InboundTransfers
+  payments!: Payments
 
   // Money movement
   counterparties!: Counterparties
@@ -77,6 +79,7 @@ export class ApiBinder extends BaseApi {
     this.virtualNubans = new VirtualNubans(this.core)
     this.subAccounts = new SubAccounts(this.core)
     this.inboundTransfers = new InboundTransfers(this.core)
+    this.payments = new Payments(this.core)
     this.counterparties = new Counterparties(this.core)
     this.banks = new Banks(this.core)
     this.transfers = new Transfers(this.core)

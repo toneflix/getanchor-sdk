@@ -120,6 +120,30 @@ nuban.attributes.bank?.name // e.g. 'PROVIDUS BANK'
 `virtualNubans.get`, `accountNumbers.get`, and `cards.list` are served by Anchor's API and verified against the sandbox, but are not in Anchor's published reference.
 :::
 
+## payments
+
+Use `sdk.api.payments.get(id)` to read a bank transfer received into a virtual NUBAN, such as a sub-account's account number. It carries the gross `amount` and `fee` (minor units), the sender in `counterParty`, the `narration`, and a `virtualNuban` relationship identifying which account number was paid.
+
+- Method: `get(paymentId, query?)`
+- Endpoint: `GET /api/v1/payments/{paymentId}`
+- Context: Pass `include: 'VirtualNuban'` to get the receiving account number in the same call. The deposit also settles onto the sub-account as a `Settlement` transaction, listed by `subAccounts.transactions({ subAccountId, include: 'Payment' })`.
+
+::: warning
+Anchor's changelog lists `/api/v1/payments` as retired, but sub-account deposits are still `Payment` resources that `inboundTransfers.get` does not serve, and this lookup still answers. Prefer the resources a webhook carries in `included`, and keep this as the fallback.
+:::
+
+### Example
+
+```ts
+import { findIncluded } from 'getanchor-sdk'
+
+const document = await sdk.api.payments.get(paymentId, { include: 'VirtualNuban' })
+
+document.data.attributes.amount // minor units
+document.data.attributes.counterParty?.accountName
+findIncluded(document, [document.data, 'virtualNuban'])?.attributes.accountNumber
+```
+
 ## inboundTransfers
 
 Use `sdk.api.inboundTransfers.get(id)` to fetch a bank transfer received into one of your account numbers.

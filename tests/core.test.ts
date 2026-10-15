@@ -71,6 +71,7 @@ describe('Core', () => {
         'accountNumbers',
         'subAccounts',
         'inboundTransfers',
+        'payments',
         'virtualNubans',
         'counterparties',
         'banks',
