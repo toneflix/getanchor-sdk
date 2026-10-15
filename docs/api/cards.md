@@ -15,6 +15,7 @@ Use `sdk.api.cards` for the card lifecycle.
 ### Methods
 
 - `create(body)` calls `POST /api/v1/cards` to issue a card from one of your card products.
+- `list(query?)` calls `GET /api/v1/cards`. Filter with `customerId` or `accountId`.
 - `get(cardId, query?)` calls `GET /api/v1/cards/{cardId}` for non-sensitive details (masked PAN, last four, status, balance).
 - `update(cardId, body)` calls `POST /api/v1/cards/{cardId}`. The description is the only attribute that can change.
 - `freeze(cardId)` calls `POST /api/v1/cards/{cardId}/freeze`.

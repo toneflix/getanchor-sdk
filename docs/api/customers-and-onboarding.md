@@ -19,7 +19,7 @@ Use `sdk.api.customers` for the customer lifecycle and identity verification.
 - `get(customerId, query?)` calls `GET /api/v1/customers/{customerId}`.
 - `update(customerId, body)` calls `PUT /api/v1/customers/update/{customerId}`.
 - `delete(customerId)` calls `DELETE /api/v1/customers/{customerId}`.
-- `search(query)` calls `GET /api/v1/customers/search` to find a customer by BVN, email, phone number, or RC number.
+- `search(query)` calls `GET /api/v1/customers/search` to find a customer by BVN, email, phone number, or RC number. `customerType` is required.
 - `verifyIndividual(customerId, body)` calls `POST /api/v1/customers/{customerId}/verification/individual` to start Tier 2 or Tier 3 KYC.
 - `verifyBusiness(customerId)` calls `POST /api/v1/customers/{customerId}/verification/business` to start KYB.
 - `officersRequirement(customerId)` calls `GET /api/v1/customers/{customerId}/officers-requirement` for the minimum directors and owners a business must declare.
@@ -54,6 +54,7 @@ await sdk.api.customers.verifyIndividual(customer.id, {
 });
 
 const { data: matches } = await sdk.api.customers.search({
+  customerType: 'IndividualCustomer',
   searchValue: '22222222226',
 });
 ```

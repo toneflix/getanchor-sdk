@@ -245,7 +245,8 @@ export interface CustomerListQuery extends ListQuery {
 }
 
 export interface CustomerSearchQuery {
-    customerType?: OpenString<CustomerType>
+    /** Required by Anchor: which kind of customer to search. */
+    customerType: 'IndividualCustomer' | 'BusinessCustomer'
     /** A BVN, email, phone number or RC number. */
     searchValue: string
     include?: string | string[]

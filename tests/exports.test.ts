@@ -27,7 +27,7 @@ describe('package exports', () => {
     it('exposes each resource class', () => {
         for (const name of [
             'CustomersApi', 'BusinessesApi', 'NextOfKinApi', 'DocumentsApi', 'AccountsApi',
-            'AccountNumbersApi', 'SubAccountsApi', 'InboundTransfersApi', 'CounterpartiesApi',
+            'AccountNumbersApi', 'VirtualNubansApi', 'SubAccountsApi', 'InboundTransfersApi', 'CounterpartiesApi',
             'BanksApi', 'TransfersApi', 'TransactionsApi', 'FeesApi', 'RewardsApi', 'CardsApi',
             'CardTransfersApi', 'CardPaymentsApi', 'ReservedAccountsApi', 'PayWithTransfersApi',
             'PayInsApi', 'BillsApi', 'StatementsApi', 'ReportsApi', 'EventsApi', 'WebhooksApi',

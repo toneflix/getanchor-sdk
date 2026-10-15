@@ -54,7 +54,7 @@ const { data: transfer } = await anchor.api.transfers.create(
 | ---------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `customers`                                                | Create, list, get, update, delete, search, KYC (`verifyIndividual`), KYB  |
 | `businesses`, `nextOfKin`, `documents`                     | Business officers, next of kin, KYB document upload/download              |
-| `accounts`, `accountNumbers`, `subAccounts`                | Deposit accounts, balances, freeze/unfreeze, account numbers, subledgers  |
+| `accounts`, `accountNumbers`, `subAccounts`, `virtualNubans` | Deposit accounts, balances, freeze/unfreeze, account numbers, subledgers |
 | `inboundTransfers`                                         | Bank transfers received into your account numbers                         |
 | `counterparties`, `banks`                                  | Beneficiaries, bank list, name enquiry                                    |
 | `transfers`, `transactions`, `fees`, `rewards`             | Book/NIP/bulk transfers, verification, ledger, custom fees, rewards       |

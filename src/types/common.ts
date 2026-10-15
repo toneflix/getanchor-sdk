@@ -152,6 +152,10 @@ export interface Bank {
     name?: string
     cbnCode?: string
     nipCode?: string
+    /** Some account-number payloads carry the NIP code as `code` instead of `nipCode`. */
+    code?: string
+    /** The partner bank behind an account number, e.g. `providus`. */
+    provider?: string
 }
 
 export type Gender = 'Male' | 'Female' | 'Others'

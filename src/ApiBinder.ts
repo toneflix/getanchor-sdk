@@ -1,6 +1,7 @@
 import { BaseApi } from './BaseApi'
 
 import { AccountNumbers } from './Apis/AccountNumbers'
+import { VirtualNubans } from './Apis/VirtualNubans'
 import { Accounts } from './Apis/Accounts'
 import { Banks } from './Apis/Banks'
 import { Bills } from './Apis/Bills'
@@ -32,6 +33,7 @@ export class ApiBinder extends BaseApi {
     // Banking
     accounts!: Accounts
     accountNumbers!: AccountNumbers
+    virtualNubans!: VirtualNubans
     subAccounts!: SubAccounts
     inboundTransfers!: InboundTransfers
 
@@ -72,6 +74,7 @@ export class ApiBinder extends BaseApi {
         this.documents = new Documents(this.core)
         this.accounts = new Accounts(this.core)
         this.accountNumbers = new AccountNumbers(this.core)
+        this.virtualNubans = new VirtualNubans(this.core)
         this.subAccounts = new SubAccounts(this.core)
         this.inboundTransfers = new InboundTransfers(this.core)
         this.counterparties = new Counterparties(this.core)

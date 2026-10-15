@@ -60,7 +60,7 @@ describe('Core', () => {
         expect(Object.keys(client.api).filter(key => typeof (client.api as never)[key] === 'object')).toEqual(
             expect.arrayContaining([
                 'customers', 'businesses', 'nextOfKin', 'documents', 'accounts', 'accountNumbers',
-                'subAccounts', 'inboundTransfers', 'counterparties', 'banks', 'transfers',
+                'subAccounts', 'inboundTransfers', 'virtualNubans', 'counterparties', 'banks', 'transfers',
                 'transactions', 'fees', 'rewards', 'cards', 'cardTransfers', 'cardPayments',
                 'reservedAccounts', 'payWithTransfers', 'payIns', 'bills', 'statements', 'reports',
                 'events', 'webhooks', 'countries',

@@ -162,6 +162,28 @@ export type AccountNumber = Resource<
     'AccountNumber',
     {
         accountName?: string
+        /** Single-account reads return the account name as `name`. */
+        name?: string
+        accountNumber?: string
+        bank?: Bank
+        currency?: Currency
+        isDefault?: boolean
+        permanent?: boolean
+        status?: AccountStatus
+        createdAt?: string
+        updatedAt?: string
+    },
+    'settlementAccount' | 'account' | 'customer'
+>
+
+/**
+ * The account number behind a sub-account (and other virtual accounts). Its
+ * `subAccount` relationship ties an incoming deposit back to the sub-account.
+ */
+export type VirtualNuban = Resource<
+    'VirtualNuban',
+    {
+        accountName?: string
         accountNumber?: string
         bank?: Bank
         currency?: Currency
@@ -170,7 +192,7 @@ export type AccountNumber = Resource<
         status?: AccountStatus
         createdAt?: string
     },
-    'settlementAccount' | 'customer'
+    'settlementAccount' | 'subAccount' | 'customer'
 >
 
 export interface AccountNumberListQuery extends ListQuery {

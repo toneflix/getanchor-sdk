@@ -1,14 +1,17 @@
-import { BaseApi } from '../BaseApi'
 import type {
+    AnchorCollection,
     AnchorDocument,
     Card,
     CardDetails,
+    CardListQuery,
     CardRevealToken,
     CreateCardInput,
     IncludeQuery,
     RequestOptions,
     UpdateCardInput,
 } from '../types'
+
+import { BaseApi } from '../BaseApi'
 
 export class Cards extends BaseApi {
     /**
@@ -17,9 +20,28 @@ export class Cards extends BaseApi {
      *
      * HTTP POST /api/v1/cards
      * @see https://docs.getanchor.co/docs/create-card
+     * 
+     * @param body 
+     * @param options 
+     * @returns 
      */
-    async create (body: CreateCardInput, options?: RequestOptions) {
+    async create(body: CreateCardInput, options?: RequestOptions) {
         return this.request<AnchorDocument<Card>>('POST', '/api/v1/cards', { body, options })
+    }
+
+    /**
+     * List cards, optionally for one customer or account. Paginated. Not in
+     * Anchor's reference, but served by the API and verified against the sandbox.
+     *
+     * HTTP GET /api/v1/cards
+     * @see https://docs.getanchor.co/docs/manage-cards
+     * 
+     * @param query 
+     * @param options 
+     * @returns 
+     */
+    async list(query?: CardListQuery, options?: RequestOptions) {
+        return this.request<AnchorCollection<Card>>('GET', '/api/v1/cards', { query, options })
     }
 
     /**
@@ -27,8 +49,13 @@ export class Cards extends BaseApi {
      *
      * HTTP GET /api/v1/cards/{cardId}
      * @see https://docs.getanchor.co/docs/manage-cards
+     * 
+     * @param cardId 
+     * @param query 
+     * @param options 
+     * @returns 
      */
-    async get (cardId: string, query?: IncludeQuery, options?: RequestOptions) {
+    async get(cardId: string, query?: IncludeQuery, options?: RequestOptions) {
         return this.request<AnchorDocument<Card>>('GET', '/api/v1/cards/{cardId}', {
             params: { cardId },
             query,
@@ -41,8 +68,13 @@ export class Cards extends BaseApi {
      *
      * HTTP POST /api/v1/cards/{cardId}
      * @see https://docs.getanchor.co/docs/manage-cards#update-card
+     * 
+     * @param cardId 
+     * @param body 
+     * @param options 
+     * @returns 
      */
-    async update (cardId: string, body: UpdateCardInput, options?: RequestOptions) {
+    async update(cardId: string, body: UpdateCardInput, options?: RequestOptions) {
         return this.request<AnchorDocument<Card>>('POST', '/api/v1/cards/{cardId}', {
             params: { cardId },
             body,
@@ -56,8 +88,12 @@ export class Cards extends BaseApi {
      *
      * HTTP POST /api/v1/cards/{cardId}/freeze
      * @see https://docs.getanchor.co/docs/manage-cards#freeze-card
+     * 
+     * @param cardId 
+     * @param options 
+     * @returns 
      */
-    async freeze (cardId: string, options?: RequestOptions) {
+    async freeze(cardId: string, options?: RequestOptions) {
         return this.request<AnchorDocument<Card>>('POST', '/api/v1/cards/{cardId}/freeze', {
             params: { cardId },
             options,
@@ -69,8 +105,12 @@ export class Cards extends BaseApi {
      *
      * HTTP POST /api/v1/cards/{cardId}/unfreeze
      * @see https://docs.getanchor.co/docs/manage-cards#unfreeze-card
+     * 
+     * @param cardId 
+     * @param options 
+     * @returns 
      */
-    async unfreeze (cardId: string, options?: RequestOptions) {
+    async unfreeze(cardId: string, options?: RequestOptions) {
         return this.request<AnchorDocument<Card>>('POST', '/api/v1/cards/{cardId}/unfreeze', {
             params: { cardId },
             options,
@@ -82,8 +122,12 @@ export class Cards extends BaseApi {
      *
      * HTTP DELETE /api/v1/cards/{cardId}
      * @see https://docs.getanchor.co/docs/manage-cards#cancel-card
+     * 
+     * @param cardId 
+     * @param options 
+     * @returns 
      */
-    async cancel (cardId: string, options?: RequestOptions) {
+    async cancel(cardId: string, options?: RequestOptions) {
         return this.request<AnchorDocument<Card> | undefined>('DELETE', '/api/v1/cards/{cardId}', {
             params: { cardId },
             options,
@@ -96,8 +140,12 @@ export class Cards extends BaseApi {
      *
      * HTTP POST /api/v1/cards/{cardId}/reveal-token
      * @see https://docs.getanchor.co/docs/create-card#5-retrieving-sensitive-card-details
+     * 
+     * @param cardId 
+     * @param options 
+     * @returns 
      */
-    async createRevealToken (cardId: string, options?: RequestOptions) {
+    async createRevealToken(cardId: string, options?: RequestOptions) {
         return this.request<AnchorDocument<CardRevealToken>>('POST', '/api/v1/cards/{cardId}/reveal-token', {
             params: { cardId },
             options,
@@ -119,9 +167,9 @@ export class Cards extends BaseApi {
      * HTTP GET /api/v1/cards/details
      * @see https://docs.getanchor.co/docs/create-card#5-retrieving-sensitive-card-details
      */
-    async revealDetails (card: { cardId: string }, options?: Omit<RequestOptions, 'idempotencyKey'>): Promise<AnchorDocument<CardDetails>>
-    async revealDetails (revealToken: string, options?: Omit<RequestOptions, 'idempotencyKey'>): Promise<AnchorDocument<CardDetails>>
-    async revealDetails (source: string | { cardId: string }, options?: Omit<RequestOptions, 'idempotencyKey'>) {
+    async revealDetails(card: { cardId: string }, options?: Omit<RequestOptions, 'idempotencyKey'>): Promise<AnchorDocument<CardDetails>>
+    async revealDetails(revealToken: string, options?: Omit<RequestOptions, 'idempotencyKey'>): Promise<AnchorDocument<CardDetails>>
+    async revealDetails(source: string | { cardId: string }, options?: Omit<RequestOptions, 'idempotencyKey'>) {
         const revealToken = typeof source === 'string'
             ? source
             : (await this.createRevealToken(source.cardId, options)).data?.token

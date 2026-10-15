@@ -51,11 +51,10 @@ await sdk.api.accounts.unfreeze({
 
 ## accountNumbers
 
-Use `sdk.api.accountNumbers.list(query)` to get the account numbers that point at a deposit account. Anchor lets one deposit account carry several account numbers.
+Use `sdk.api.accountNumbers` to get the account numbers that point at a deposit account. Anchor lets one deposit account carry several account numbers.
 
-- Method: `list(query?)`
-- Endpoint: `GET /api/v1/account-numbers`
-- Context: Pass the deposit account id as `AccountId` (Anchor spells this parameter with a capital `A`).
+- `list(query?)` calls `GET /api/v1/account-numbers`. Pass the deposit account id as `AccountId` (Anchor spells this parameter with a capital `A`).
+- `get(accountNumberId, query?)` calls `GET /api/v1/account-numbers/{accountNumberId}`.
 
 ### Example
 
@@ -96,6 +95,30 @@ const { data: entries } = await sdk.api.subAccounts.transactions({
   direction: 'Credit',
 });
 ```
+
+## virtualNubans
+
+Use `sdk.api.virtualNubans.get(id)` to read the 10-digit account number behind a sub-account. A sub-account only exposes its NUBAN's id (in `relationships.virtualNubans`), so this is the call that returns the number customers pay into, its bank, and a `subAccount` relationship pointing back.
+
+- Method: `get(virtualNubanId, query?)`
+- Endpoint: `GET /api/v1/virtual-nubans/{virtualNubanId}`
+
+### Example
+
+```ts
+import { relationshipIds } from 'getanchor-sdk';
+
+const { data: subAccount } = await sdk.api.subAccounts.get(subAccountId);
+const [nubanId] = relationshipIds(subAccount, 'virtualNubans');
+
+const { data: nuban } = await sdk.api.virtualNubans.get(nubanId);
+nuban.attributes.accountNumber; // e.g. '5463208336'
+nuban.attributes.bank?.name; // e.g. 'PROVIDUS BANK'
+```
+
+::: tip
+`virtualNubans.get`, `accountNumbers.get`, and `cards.list` are served by Anchor's API and verified against the sandbox, but are not in Anchor's published reference.
+:::
 
 ## inboundTransfers
 

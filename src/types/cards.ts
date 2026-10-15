@@ -171,4 +171,9 @@ export type CardPaymentHistoryCategory = OpenString<
     | 'CARD_SETTLEMENT_ADJUSTMENT' | 'CARD_REFUND_REQUEST' | 'CARD_REFUND' | 'CARD_DECLINE'
 >
 
+export interface CardListQuery extends ListQuery {
+    customerId?: string
+    accountId?: string
+}
+
 export type CardPaymentListQuery = ListQuery & Record<string, string | number | boolean | string[] | undefined>

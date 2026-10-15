@@ -25,6 +25,7 @@ export {
 export type { AnchorWebhookEvent, AnchorWebhookHeaders } from './Webhooks'
 
 export { AccountNumbers as AccountNumbersApi } from './Apis/AccountNumbers'
+export { VirtualNubans as VirtualNubansApi } from './Apis/VirtualNubans'
 export { Accounts as AccountsApi } from './Apis/Accounts'
 export { Banks as BanksApi } from './Apis/Banks'
 export { Bills as BillsApi } from './Apis/Bills'

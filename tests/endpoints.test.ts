@@ -25,7 +25,7 @@ const cases: Case[] = [
     { name: 'customers.get', call: a => a.customers.get('cst_1', { include: ['DepositAccount', 'Document'] }), method: 'GET', path: '/api/v1/customers/cst_1', query: { include: 'DepositAccount,Document' } },
     { name: 'customers.update', call: a => a.customers.update('cst_1', body), method: 'PUT', path: '/api/v1/customers/update/cst_1', sendsBody: true },
     { name: 'customers.delete', call: a => a.customers.delete('cst_1'), method: 'DELETE', path: '/api/v1/customers/cst_1' },
-    { name: 'customers.search', call: a => a.customers.search({ searchValue: '22222222226' }), method: 'GET', path: '/api/v1/customers/search', query: { searchValue: '22222222226' } },
+    { name: 'customers.search', call: a => a.customers.search({ customerType: 'IndividualCustomer', searchValue: '22222222226' }), method: 'GET', path: '/api/v1/customers/search', query: { customerType: 'IndividualCustomer', searchValue: '22222222226' } },
     { name: 'customers.verifyIndividual', call: a => a.customers.verifyIndividual('cst_1', body), method: 'POST', path: '/api/v1/customers/cst_1/verification/individual', sendsBody: true },
     { name: 'customers.verifyBusiness', call: a => a.customers.verifyBusiness('cst_1'), method: 'POST', path: '/api/v1/customers/cst_1/verification/business' },
     { name: 'customers.officersRequirement', call: a => a.customers.officersRequirement('cst_1'), method: 'GET', path: '/api/v1/customers/cst_1/officers-requirement' },
@@ -58,6 +58,8 @@ const cases: Case[] = [
     { name: 'accounts.rootAccounts', call: a => a.accounts.rootAccounts({ accountType: 'MASTER' }), method: 'GET', path: '/api/v1/accounts/root-accounts', query: { accountType: 'MASTER' } },
     { name: 'accounts.freeze', call: a => a.accounts.freeze('acc_1', body), method: 'POST', path: '/api/v1/accounts/acc_1/freeze', sendsBody: true },
     { name: 'accounts.unfreeze', call: a => a.accounts.unfreeze(body), method: 'POST', path: '/api/v1/accounts/unfreeze', sendsBody: true },
+    { name: 'accountNumbers.get', call: a => a.accountNumbers.get('num_1'), method: 'GET', path: '/api/v1/account-numbers/num_1' },
+    { name: 'virtualNubans.get', call: a => a.virtualNubans.get('vn_1'), method: 'GET', path: '/api/v1/virtual-nubans/vn_1' },
     { name: 'accountNumbers.list', call: a => a.accountNumbers.list({ AccountId: 'acc_1' }), method: 'GET', path: '/api/v1/account-numbers', query: { AccountId: 'acc_1' } },
     { name: 'inboundTransfers.get', call: a => a.inboundTransfers.get('inb_1', { include: 'DepositAccount' }), method: 'GET', path: '/api/v1/inbound-transfers/inb_1', query: { include: 'DepositAccount' } },
 
@@ -98,6 +100,7 @@ const cases: Case[] = [
 
     // Cards
     { name: 'cards.create', call: a => a.cards.create(body), method: 'POST', path: '/api/v1/cards', sendsBody: true },
+    { name: 'cards.list', call: a => a.cards.list({ customerId: 'cst_1' }), method: 'GET', path: '/api/v1/cards', query: { customerId: 'cst_1' } },
     { name: 'cards.get', call: a => a.cards.get('card_1'), method: 'GET', path: '/api/v1/cards/card_1' },
     { name: 'cards.update', call: a => a.cards.update('card_1', body), method: 'POST', path: '/api/v1/cards/card_1', sendsBody: true },
     { name: 'cards.freeze', call: a => a.cards.freeze('card_1'), method: 'POST', path: '/api/v1/cards/card_1/freeze' },
