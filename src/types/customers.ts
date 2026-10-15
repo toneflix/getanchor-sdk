@@ -8,6 +8,7 @@ import type {
   RequestDocument,
   Resource,
 } from './common'
+
 import type { FileSource } from '../Files'
 
 export type CustomerStatus = OpenString<'ACTIVE' | 'EXPIRED' | 'DELETED' | 'IN_ACTIVE'>
@@ -209,7 +210,7 @@ export interface BusinessCustomerAttributes {
   detail?: BusinessDetail
   /** Present on the `BusinessCustomer` shape. */
   contact?:
-    BusinessContact | { email?: string; phoneNumber?: string; fullName?: FullName; bvn?: string }
+  BusinessContact | { email?: string; phoneNumber?: string; fullName?: FullName; bvn?: string }
   /** Present on the `BusinessCustomer` shape. */
   officers?: BusinessOfficer[]
   /** The remaining fields are present on the flattened `BusinessCustomerV2` shape. */
@@ -242,7 +243,11 @@ export interface CreateIndividualCustomerAttributes {
   fullName: FullName
   email: string
   phoneNumber: string
-  address: Address
+  /**
+   * Optional: Anchor accepts a customer with no address, but rejects a partial
+   * one (`addressLine_1`, `city` and `state` are then required).
+   */
+  address?: Address
   isSoleProprietor?: boolean
   description?: string
   doingBusinessAs?: string
@@ -292,20 +297,20 @@ export type CreateCustomerInput =
 
 export type UpdateCustomerInput =
   | RequestDocument<{
-      type: 'IndividualCustomer'
-      attributes: {
-        email: string
-        phoneNumber: string
-        description?: string
-        doingBusinessAs?: string
-        identificationLevel2?: IdentificationLevel2
-        identificationLevel3?: IdentificationLevel3
-      }
-    }>
+    type: 'IndividualCustomer'
+    attributes: {
+      email: string
+      phoneNumber: string
+      description?: string
+      doingBusinessAs?: string
+      identificationLevel2?: IdentificationLevel2
+      identificationLevel3?: IdentificationLevel3
+    }
+  }>
   | RequestDocument<{
-      type: 'BusinessCustomer'
-      attributes: Partial<CreateBusinessCustomerAttributes>
-    }>
+    type: 'BusinessCustomer'
+    attributes: Partial<CreateBusinessCustomerAttributes>
+  }>
 
 export interface CustomerListQuery extends ListQuery {
   customerType?: OpenString<CustomerType>

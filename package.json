@@ -1,7 +1,7 @@
 {
   "name": "getanchor-sdk",
   "type": "module",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": false,
   "description": "Node.js SDK for the Anchor (getanchor.co) banking-as-a-service API.",
   "main": "./dist/index.cjs",
