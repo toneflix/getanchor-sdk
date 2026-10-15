@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest'
-
 import { AnchorApiError, Core } from '../src/index'
+import { describe, expect, it } from 'vitest'
 
 /**
  * Read-only smoke test against the real Anchor sandbox. Opt in with
@@ -9,7 +8,10 @@ import { AnchorApiError, Core } from '../src/index'
 const enabled = process.env.ANCHOR_LIVE_TESTS === '1' && !!process.env.ANCHOR_API_KEY
 
 describe.skipIf(!enabled)('Anchor sandbox', () => {
-    const client = () => new Core({ apiKey: process.env.ANCHOR_API_KEY, environment: 'sandbox', debugLevel: 0 })
+    const client = () => new Core({
+        apiKey: process.env.ANCHOR_API_KEY,
+        environment: 'sandbox', debugLevel: 0
+    })
 
     it('lists banks', async () => {
         const banks = await client().api.banks.list()
