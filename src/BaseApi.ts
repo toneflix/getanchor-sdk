@@ -1,4 +1,4 @@
-import { getConfig, BaseApi as KitBaseApi } from '@oapiex/sdk-kit'
+import { BaseApi as KitBaseApi } from '@oapiex/sdk-kit'
 import type { AuthConfig, HttpMethod } from '@oapiex/sdk-kit'
 
 import { AnchorApiError } from './Errors'
@@ -53,12 +53,16 @@ export class BaseApi extends KitBaseApi {
       headers['x-anchor-idempotent-key'] = request.options.idempotencyKey
     }
 
+    // This client's own config, so another SDK (or another Anchor client) in the
+    // same process never lends this request its credentials or base URL.
+    const config = this.core.getConfig()
+
     let targetUrl = url
     if (request.auth !== false) {
-      ;({ headers, url: targetUrl } = await applyAuth({ method, url, headers, body }))
+      ;({ headers, url: targetUrl } = await applyAuth({ method, url, headers, body }, config.auth))
     }
 
-    const response = await transport.send({ method, url: targetUrl, headers, body })
+    const response = await transport.send({ method, url: targetUrl, headers, body, config })
 
     if (response.status >= 400) {
       throw AnchorApiError.fromResponse(response.status, response.data)
@@ -115,8 +119,10 @@ const hasHeader = (headers: Record<string, string>, name: string) =>
  *
  * @param target
  */
-const applyAuth = async (target: AuthTarget): Promise<AuthTarget> => {
-  const configured = getConfig().auth
+const applyAuth = async (
+  target: AuthTarget,
+  configured: AuthConfig | AuthConfig[] | undefined,
+): Promise<AuthTarget> => {
   const strategies: AuthConfig[] = configured
     ? Array.isArray(configured)
       ? configured

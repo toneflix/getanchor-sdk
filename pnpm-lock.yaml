@@ -12,8 +12,8 @@ importers:
         specifier: ^2.2.7
         version: 2.2.7(@types/node@25.9.5)
       '@oapiex/sdk-kit':
-        specifier: ^0.1.16
-        version: 0.1.16
+        specifier: ^0.2.1
+        version: 0.2.1
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -572,8 +572,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@oapiex/sdk-kit@0.1.16':
-    resolution: {integrity: sha512-B8g7fwDSpUrlF329bLoc3wAspbhIHeMoKiRXPwYT0skZHmV5eE11uHegy5+0RX6mpu/fNA2XmQ9iOXt1LliWaw==}
+  '@oapiex/sdk-kit@0.2.1':
+    resolution: {integrity: sha512-1PZrrAGbeTNR3YMGB0k58cM3Q7P7artm1DZ8RogkYuUq/78jgFSizeUxuRuaHS9OmOLzfCy8uBKOYBMB8869qQ==}
 
   '@oxc-project/types@0.143.0':
     resolution: {integrity: sha512-u6JZdLBTLotrNC9Vd6vPssINdzcCzleKAH6EJKImQb7GtYvX5keN2dxkoK44stCc4tffE6QQRtZTXVSzsLUlWA==}
@@ -3240,7 +3240,7 @@ snapshots:
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
-  '@oapiex/sdk-kit@0.1.16':
+  '@oapiex/sdk-kit@0.2.1':
     dependencies:
       axios: 1.19.0
       dotenv: 17.4.2

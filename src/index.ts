@@ -1,6 +1,4 @@
-import { setConfigFileBasename, updateConfig } from '@oapiex/sdk-kit'
-
-import { ANCHOR_URLS, Core } from './Core'
+import { Core } from './Core'
 import type { InitOptions } from './Core'
 
 export * from './types'
@@ -62,10 +60,6 @@ export { Transfers as TransfersApi } from './Apis/Transfers'
  * @param options
  */
 export const createClient = (options: InitOptions = {}): Core => new Core(options)
-
-setConfigFileBasename('anchor.config')
-
-updateConfig({ urls: { ...ANCHOR_URLS } })
 
 export {
   BadRequestException,

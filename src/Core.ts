@@ -1,4 +1,4 @@
-import { getConfig, Core as KitCore } from '@oapiex/sdk-kit'
+import { getBaseConfig, Core as KitCore } from '@oapiex/sdk-kit'
 import type {
   ApiKeyAuthConfig,
   Environment,
@@ -33,8 +33,19 @@ export const anchorApiKeyAuth = (apiKey: string): ApiKeyAuthConfig => ({
   value: apiKey,
 })
 
+/**
+ * The URLs a config file set, without the kit's empty placeholders.
+ *
+ * @param urls
+ */
+const configuredUrls = (urls?: UserConfig['urls']) =>
+  Object.fromEntries(Object.entries(urls ?? {}).filter(([, url]) => Boolean(url)))
+
 export class Core extends KitCore {
   static override apiClass = ApiBinder
+
+  /** Read `anchor.config.*`, whatever other SDKs in the process read. */
+  static override configFile = 'anchor.config'
 
   declare api: ApiBinder
 
@@ -51,32 +62,31 @@ export class Core extends KitCore {
   constructor(options?: InitOptions)
   constructor(apiKey?: string, env?: Environment, config?: Partial<UserConfig>)
   constructor(apiKey?: string | InitOptions, env?: Environment, config?: Partial<UserConfig>) {
-    const conf = getConfig()
+    // This SDK's config file plus explicit kit defaults; never what another
+    // client in the process was configured with.
+    const base = getBaseConfig(Core.configFile)
     const options: Partial<InitOptions> =
       typeof apiKey === 'object' && apiKey !== null
         ? apiKey
         : { ...config, apiKey, environment: env ?? config?.environment }
 
-    // The kit's config is process-global; keep the key out of it so one client's
-    // key never leaks into the next client that relies on ANCHOR_API_KEY.
     const { apiKey: explicitKey, ...rest } = options
-    const key = explicitKey ?? conf.apiKey ?? process.env.ANCHOR_API_KEY
-    const auth = rest.auth ?? (key ? anchorApiKeyAuth(key) : conf.auth)
+    const key = explicitKey ?? base.apiKey ?? process.env.ANCHOR_API_KEY
+    const auth = rest.auth ?? (key ? anchorApiKeyAuth(key) : base.auth)
 
     if (!auth) {
       throw new Error('An Anchor API key is required: pass `apiKey` or set ANCHOR_API_KEY.')
     }
 
     super({
-      ...conf,
       ...rest,
       environment:
         rest.environment ??
-        conf.environment ??
         normalizeEnvironment(process.env.ANCHOR_ENVIRONMENT) ??
         normalizeEnvironment(process.env.ENVIRONMENT) ??
+        base.environment ??
         'sandbox',
-      urls: { ...ANCHOR_URLS, ...conf.urls, ...rest.urls },
+      urls: { ...ANCHOR_URLS, ...configuredUrls(base.urls), ...rest.urls },
       auth,
     })
   }

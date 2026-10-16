@@ -94,4 +94,29 @@ describe('Core', () => {
       ]),
     )
   })
+
+  it("keeps two clients' keys, environments and base URLs apart", async () => {
+    const send = vi.mocked(transport.send)
+    const sandbox = new Core({ apiKey: 'sandbox-key', environment: 'sandbox', debugLevel: 0 })
+    // Created second: with a shared kit config this used to take over the first client.
+    const live = new Core({
+      apiKey: 'live-key',
+      environment: 'live',
+      debugLevel: 0,
+      urls: { live: 'https://anchor.proxy.test' },
+    })
+
+    await sandbox.api.banks.list()
+    const [sandboxRequest] = send.mock.calls.at(-1)!
+    await live.api.banks.list()
+    const [liveRequest] = send.mock.calls.at(-1)!
+
+    expect(sandboxRequest.url).toBe('https://api.sandbox.getanchor.co/api/v1/banks')
+    expect(sandboxRequest.headers['x-anchor-key']).toBe('sandbox-key')
+    expect(sandboxRequest.config?.environment).toBe('sandbox')
+
+    expect(liveRequest.url).toBe('https://anchor.proxy.test/api/v1/banks')
+    expect(liveRequest.headers['x-anchor-key']).toBe('live-key')
+    expect(liveRequest.config?.environment).toBe('live')
+  })
 })
